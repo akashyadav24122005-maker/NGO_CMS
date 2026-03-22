@@ -8,3 +8,9 @@ def about(request):
 
 def projects(request):
     return render(request, "projects.html")
+
+def contact(request):
+    return render(request, "contact.html")
+
+def donate(request):
+    return render(request, "donate.html")    
