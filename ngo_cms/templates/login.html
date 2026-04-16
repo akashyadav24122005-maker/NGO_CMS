@@ -1,0 +1,111 @@
+{% extends 'base.html' %}
+
+{% block title %}Login | NGO CMS{% endblock %}
+
+{% block content %}
+
+<style>
+.login-card{
+    border-radius: 22px;
+    border: none;
+}
+
+.login-input{
+    border-radius: 12px;
+    padding: 10px 14px;
+}
+
+.login-btn{
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 10px;
+}
+
+.login-link{
+    text-decoration: none;
+}
+
+.login-link:hover{
+    text-decoration: underline;
+}
+</style>
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-6 col-lg-5">
+
+            <div class="card shadow login-card">
+                <div class="card-body p-4">
+
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold text-success">Welcome Back</h2>
+                        <p class="text-muted mb-0">
+                            Login to your NGO CMS account
+                        </p>
+                    </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <!-- Username -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Username</label>
+                            <input type="text"
+                                   name="username"
+                                   class="form-control login-input"
+                                   placeholder="Enter username"
+                                   required>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Password</label>
+                            <input type="password"
+                                   name="password"
+                                   class="form-control login-input"
+                                   placeholder="Enter password"
+                                   required>
+                        </div>
+
+                        <!-- Forgot Password -->
+                        <div class="text-end mb-3">
+                            <a href="{% url 'password_reset' %}"
+                               class="text-success fw-semibold login-link">
+                                Forgot Password?
+                            </a>
+                        </div>
+
+                        <!-- Login Button -->
+                        <div class="d-grid">
+                            <button type="submit"
+                                    class="btn btn-success login-btn">
+                                Login
+                            </button>
+                        </div>
+
+                    </form>
+
+                    <!-- Register -->
+                    <div class="text-center mt-4">
+                        <p class="mb-0">
+                            Don’t have an account?
+                            <a href="{% url 'register' %}"
+                               class="text-success fw-semibold login-link">
+                                Create New Account
+                            </a>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

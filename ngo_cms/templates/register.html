@@ -1,0 +1,124 @@
+{% extends 'base.html' %}
+
+{% block title %}Register | NGO CMS{% endblock %}
+
+{% block content %}
+
+<style>
+.register-card{
+    border-radius: 22px;
+    border: none;
+}
+
+.register-input,
+.register-select{
+    border-radius: 12px;
+    padding: 10px 14px;
+}
+
+.register-btn{
+    border-radius: 12px;
+    font-weight: 600;
+    padding: 10px;
+}
+
+.register-link{
+    text-decoration: none;
+}
+
+.register-link:hover{
+    text-decoration: underline;
+}
+</style>
+
+<div class="container py-5">
+
+    <div class="row justify-content-center">
+
+        <div class="col-md-7 col-lg-6">
+
+            <div class="card shadow register-card">
+                <div class="card-body p-4">
+
+                    <!-- Header -->
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold text-success">Create Account</h2>
+                        <p class="text-muted mb-0">
+                            Register to access NGO CMS
+                        </p>
+                    </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <!-- Username -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Username</label>
+                            <input type="text"
+                                   name="username"
+                                   class="form-control register-input"
+                                   placeholder="Enter username"
+                                   required>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Email Address</label>
+                            <input type="email"
+                                   name="email"
+                                   class="form-control register-input"
+                                   placeholder="Enter email"
+                                   required>
+                        </div>
+
+                        <!-- Password -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Password</label>
+                            <input type="password"
+                                   name="password"
+                                   class="form-control register-input"
+                                   placeholder="Enter password"
+                                   required>
+                        </div>
+
+                        <!-- Role -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Select Role</label>
+                            <select name="role"
+                                    class="form-select register-select">
+                                <option value="user">User</option>
+                                <option value="admin">Admin</option>
+                            </select>
+                        </div>
+
+                        <!-- Button -->
+                        <div class="d-grid">
+                            <button type="submit"
+                                    class="btn btn-success register-btn">
+                                Register
+                            </button>
+                        </div>
+
+                    </form>
+
+                    <!-- Login Link -->
+                    <div class="text-center mt-4">
+                        <p class="mb-0">
+                            Already have an account?
+                            <a href="{% url 'login' %}"
+                               class="text-success fw-semibold register-link">
+                                Login
+                            </a>
+                        </p>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+
+</div>
+
+{% endblock %}

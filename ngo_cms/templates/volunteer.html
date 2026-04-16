@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+
+{% block title %}Volunteer | NGO CMS{% endblock %}
+
+{% block content %}
+
+<div class="container py-5">
+    <div class="row justify-content-center">
+
+        <div class="col-md-7 col-lg-6">
+
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-4">
+
+                    <!-- Heading -->
+                    <div class="text-center mb-4">
+                        <h2 class="fw-bold text-success">Volunteer Registration</h2>
+                        <p class="text-muted">
+                            Join us and make a positive impact in the community.
+                        </p>
+                    </div>
+
+                    <form method="POST">
+                        {% csrf_token %}
+
+                        <!-- Full Name -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Full Name</label>
+                            <input type="text"
+                                   name="full_name"
+                                   class="form-control"
+                                   placeholder="Enter Full Name"
+                                   required>
+                        </div>
+
+                        <!-- Email -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Email</label>
+                            <input type="email"
+                                   name="email"
+                                   class="form-control"
+                                   placeholder="Enter Email Address"
+                                   required>
+                        </div>
+
+                        <!-- Phone -->
+                        <div class="mb-3">
+                            <label class="form-label fw-semibold">Phone Number</label>
+                            <input type="text"
+                                   name="phone"
+                                   class="form-control"
+                                   placeholder="Enter Phone Number"
+                                   required>
+                        </div>
+
+                        <!-- Interest -->
+                        <div class="mb-4">
+                            <label class="form-label fw-semibold">Area of Interest</label>
+                            <input type="text"
+                                   name="interest"
+                                   class="form-control"
+                                   placeholder="Education / Healthcare / Events / Support"
+                                   required>
+                        </div>
+
+                        <!-- Submit -->
+                        <div class="d-grid">
+                            <button type="submit" class="btn btn-success py-2 fw-bold">
+                                Submit
+                            </button>
+                        </div>
+
+                    </form>
+
+                </div>
+            </div>
+
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}

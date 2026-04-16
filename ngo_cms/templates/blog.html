@@ -1,0 +1,48 @@
+{% extends 'base.html' %}
+{% block title %}{{ post.title }} — HopeNGO Blog{% endblock %}
+
+{% block content %}
+
+<div class="page-header bg-secondary text-white py-5">
+  <div class="container">
+    <nav aria-label="breadcrumb">
+      <ol class="breadcrumb mb-3">
+        <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-white opacity-75">Home</a></li>
+        <li class="breadcrumb-item"><a href="{% url 'blog' %}" class="text-white opacity-75">Blog</a></li>
+        <li class="breadcrumb-item active text-white">{{ post.title|truncatechars:40 }}</li>
+      </ol>
+    </nav>
+    <p class="mb-2 opacity-75 small">
+      <i class="bi bi-calendar3 me-2"></i>{{ post.published_at|date:"d M Y" }}
+      {% if post.author %}
+        <span class="ms-3"><i class="bi bi-person me-1"></i>{{ post.author.full_name }}</span>
+      {% endif %}
+    </p>
+    <h1 class="display-5 fw-bold">{{ post.title }}</h1>
+  </div>
+</div>
+
+<div class="container py-5">
+  <div class="row justify-content-center">
+    <div class="col-lg-8">
+
+      {% if post.cover_image %}
+        <img src="{{ post.cover_image.url }}" class="img-fluid rounded shadow-sm mb-4 w-100"
+             style="max-height:400px;object-fit:cover" alt="{{ post.title }}"/>
+      {% endif %}
+
+      <div class="blog-content lh-lg text-muted">
+        {{ post.content|linebreaks }}
+      </div>
+
+      
+      <div class="mt-5 pt-3 border-top">
+        <a href="{% url 'blog' %}" class="btn btn-outline-secondary px-4">
+          ← Back to Blog
+        </a>
+      </div>
+
+    </div>
+  </div>
+</div>
+{% endblock %}

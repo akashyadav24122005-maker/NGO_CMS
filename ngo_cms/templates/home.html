@@ -1,0 +1,81 @@
+{% extends 'base.html' %}
+
+{% block title %}Home | NGO CMS{% endblock %}
+
+{% block content %}
+
+<!-- Hero Section -->
+<div class="p-5 mb-5 text-center rounded shadow"
+style="
+background-image: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
+url('https://images.unsplash.com/photo-1523240795612-9a054b0db644');
+background-size: cover;
+background-position: center;
+color: white;
+">
+
+    <h1 class="display-4 fw-bold">Welcome to NGO CMS</h1>
+    <p class="lead mt-3">
+        Helping communities through education, healthcare, and social initiatives.
+    </p>
+
+    <div class="mt-4">
+        <a href="/volunteer/" class="btn btn-success btn-lg px-4 me-2">Become Volunteer</a>
+        <a href="{% url 'donate' %}" class="btn btn-primary btn-lg px-4">Donate Now</a>
+    </div>
+</div>
+
+<!-- Impact Story -->
+<div class="text-center mb-4">
+    <h2 class="fw-bold">Our Impact Story</h2>
+    <p class="text-muted">Together we are changing lives every day.</p>
+</div>
+
+<div class="row g-4">
+
+    <!-- Card 1 -->
+    <div class="col-md-4">
+        <div class="card h-100 shadow border-0">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwxJ69t-l2Xyovaok2CnoF9lRK6tx4CKtpeg&s"
+                 class="card-img-top" height="260" style="object-fit:cover;">
+            <div class="card-body text-center">
+                <h5 class="fw-bold">Education for All</h5>
+                <p class="text-muted">Providing free education to underprivileged children.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 2 -->
+    <div class="col-md-4">
+        <div class="card h-100 shadow border-0">
+            <img src="https://savioursfoundation.org/wp-content/uploads/2020/03/Health.jpg"
+                 class="card-img-top" height="260" style="object-fit:cover;">
+            <div class="card-body text-center">
+                <h5 class="fw-bold">Healthcare Support</h5>
+                <p class="text-muted">Free medical camps and health support in rural areas.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Card 3 -->
+    <div class="col-md-4">
+        <div class="card h-100 shadow border-0">
+            <img src="https://annamrita.org/wp-content/uploads/2023/02/Everything-you-need-to-know-about-the-functions-of-a-food-NGO.jpg"
+                 class="card-img-top" height="260" style="object-fit:cover;">
+            <div class="card-body text-center">
+                <h5 class="fw-bold">Food Distribution</h5>
+                <p class="text-muted">Meals and food kits for families in need.</p>
+            </div>
+        </div>
+    </div>
+
+</div>
+
+<!-- Bottom Message -->
+<div class="mt-5 p-4 bg-light rounded text-center shadow-sm">
+    <p class="mb-0 fs-5">
+        Thanks to our volunteers and donors, we have helped thousands of families gain access to education, healthcare, and food support.
+    </p>
+</div>
+
+{% endblock %}
