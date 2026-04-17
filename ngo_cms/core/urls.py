@@ -19,7 +19,6 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('admin-page/', views.admin_only_page, name='admin_page'),
-
     path(
         'password-reset/',
         auth_views.PasswordResetView.as_view(
@@ -27,7 +26,6 @@ urlpatterns = [
         ),
         name='password_reset'
     ),
-
     path(
         'password-reset/done/',
         auth_views.PasswordResetDoneView.as_view(
@@ -35,7 +33,6 @@ urlpatterns = [
         ),
         name='password_reset_done'
     ),
-
     path(
         'reset/<uidb64>/<token>/',
         auth_views.PasswordResetConfirmView.as_view(
@@ -43,7 +40,6 @@ urlpatterns = [
         ),
         name='password_reset_confirm'
     ),
-
     path(
         'reset/done/',
         auth_views.PasswordResetCompleteView.as_view(

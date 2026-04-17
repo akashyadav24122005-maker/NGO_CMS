@@ -7,7 +7,6 @@ from django.contrib.admin.views.decorators import staff_member_required
 from .models import BlogPost, Project, Donation, Volunteer
 from .forms import ContactForm, VolunteerForm
 
-
 def home(request):
     projects = Project.objects.filter(is_active=True)[:3]
     blogs = BlogPost.objects.all()[:3]
@@ -17,22 +16,17 @@ def home(request):
         "blogs": blogs
     })
 
-
 def about(request):
     return render(request, "about.html")
-
 
 def our_work(request):
     return render(request, "our_work.html")
 
-
 def media(request):
     return render(request, "media.html")
 
-
 def get_involved(request):
     return render(request, "get_involved.html")
-
 
 def projects(request):
     all_projects = Project.objects.all()
@@ -40,13 +34,11 @@ def projects(request):
         "projects": all_projects
     })
 
-
 def blog(request):
     posts = BlogPost.objects.all().order_by("-id")
     return render(request, "blog.html", {
         "posts": posts
     })
-
 
 def contact(request):
     form = ContactForm(request.POST or None)
@@ -60,7 +52,6 @@ def contact(request):
     return render(request, "contact.html", {
         "form": form
     })
-
 
 def donate(request):
     if request.method == "POST":
@@ -79,7 +70,6 @@ def donate(request):
 
     return render(request, "donate.html")
 
-
 def volunteer(request):
     form = VolunteerForm(request.POST or None)
 
@@ -92,7 +82,6 @@ def volunteer(request):
     return render(request, "volunteer.html", {
         "form": form
     })
-
 
 def register_view(request):
     if request.method == "POST":
@@ -116,9 +105,7 @@ def register_view(request):
 
         messages.success(request, "Registration successful. Please login.")
         return redirect("login")
-
     return render(request, "register.html")
-
 
 def login_view(request):
     if request.method == "POST":
@@ -130,7 +117,6 @@ def login_view(request):
             username=username,
             password=password
         )
-
         if user is not None:
             login(request, user)
             messages.success(request, "Login successful!")
@@ -139,7 +125,6 @@ def login_view(request):
         messages.error(request, "Invalid username or password!")
 
     return render(request, "login.html")
-
 
 @login_required
 def logout_view(request):
