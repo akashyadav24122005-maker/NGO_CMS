@@ -1,0 +1,69 @@
+{% extends 'base.html' %}
+{% block title %}Payment | NGO CMS{% endblock %}
+
+{% block content %}
+
+<div class="container py-5 text-center">
+
+    <div class="col-md-6 mx-auto">
+
+        <div class="card shadow border-0 rounded-4 p-5">
+
+            <h2 class="text-success fw-bold">Complete Payment</h2>
+
+            <p class="text-muted mt-2">
+                Click below to securely pay with Razorpay.
+            </p>
+
+            <button id="rzp-button"
+                    class="btn btn-success btn-lg mt-3 px-5">
+                Pay Now
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+<script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+<script>
+var options = {
+    "key": "{{ razorpay_key }}",
+    "amount": "{{ payment.amount }}",
+    "currency": "INR",
+    "name": "NGO CMS",
+    "description": "Donation Payment",
+    "order_id": "{{ payment.id }}",
+
+    "handler": function (response) {
+
+        var form = document.createElement("form");
+        form.method = "POST";
+        form.action = "/success/";
+
+        var input = document.createElement("input");
+        input.type = "hidden";
+        input.name = "razorpay_payment_id";
+        input.value = response.razorpay_payment_id;
+
+        form.appendChild(input);
+        document.body.appendChild(form);
+        form.submit();
+    },
+
+    "theme": {
+        "color": "#198754"
+    }
+};
+
+var rzp = new Razorpay(options);
+
+document.getElementById("rzp-button").onclick = function(e){
+    rzp.open();
+    e.preventDefault();
+}
+</script>
+
+{% endblock %}

@@ -12,13 +12,15 @@ urlpatterns = [
     path('get-involved/', views.get_involved, name='get_involved'),
     path('blog/', views.blog, name='blog'),
     path('contact/', views.contact, name='contact'),
-    path('donate/', views.donate, name='donate'),
     path('volunteer/', views.volunteer, name='volunteer'),
     path('register/', views.register_view, name='register'),
     path('login/', views.login_view, name='login'),
     path('logout/', views.logout_view, name='logout'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('admin-page/', views.admin_only_page, name='admin_page'),
+    path('donate/', views.donate, name='donate'),
+    path('success/', views.payment_success, name = 'success'),
+
     path(
         'password-reset/',
         auth_views.PasswordResetView.as_view(

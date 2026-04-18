@@ -6,6 +6,8 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from .models import BlogPost, Project, Donation, Volunteer
 from .forms import ContactForm, VolunteerForm
+import razorpay
+from django.conf import settings
 
 def home(request):
     projects = Project.objects.filter(is_active=True)[:3]
@@ -57,18 +59,42 @@ def donate(request):
     if request.method == "POST":
         name = request.POST.get("name")
         email = request.POST.get("email")
-        amount = request.POST.get("amount")
+        amount = int(request.POST.get("amount"))
 
-        Donation.objects.create(
+        # Save donation record
+        donation = Donation.objects.create(
             donor_name=name,
             email=email,
             amount=amount
         )
 
-        messages.success(request, "Thank you for your donation!")
-        return redirect("home")
+        # Razorpay Client
+        client = razorpay.Client(
+            auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET)
+        )
+
+        # Create Order
+        payment = client.order.create({
+            "amount": amount * 100,   # paise
+            "currency": "INR",
+            "payment_capture": "1"
+        })
+
+        context = {
+            "payment": payment,
+            "donation": donation,
+            "razorpay_key": settings.RAZORPAY_KEY_ID,
+            "amount": amount,
+        }
+
+        return render(request, "payment.html", context)
 
     return render(request, "donate.html")
+
+
+def payment_success(request):
+    messages.success(request, "Payment successful. Thank you for donating!")
+    return render(request, "success.html")
 
 def volunteer(request):
     form = VolunteerForm(request.POST or None)

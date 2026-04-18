@@ -22,6 +22,13 @@ ALLOWED_HOSTS = []
 
 
 # ===============================
+# RAZORPAY KEYS
+# ===============================
+RAZORPAY_KEY_ID = "rzp_test_Sf1btnlLfSFxIS"
+RAZORPAY_KEY_SECRET = "B6PI5hobnc7yY1cIVMDUGKqk"
+
+
+# ===============================
 # INSTALLED APPS
 # ===============================
 INSTALLED_APPS = [
@@ -65,7 +72,6 @@ TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
 
-        # Global templates folder
         'DIRS': [BASE_DIR / 'templates'],
 
         'APP_DIRS': True,
@@ -152,11 +158,11 @@ LOGOUT_REDIRECT_URL = 'login'
 
 
 # ===============================
-# EMAIL SETTINGS (Password Reset)
+# EMAIL SETTINGS
 # ===============================
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
 
-# For real Gmail later:
+# Real Gmail Setup Later:
 # EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
 # EMAIL_HOST = 'smtp.gmail.com'
 # EMAIL_PORT = 587
