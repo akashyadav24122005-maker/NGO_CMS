@@ -18,8 +18,12 @@ urlpatterns = [
     path('logout/', views.logout_view, name='logout'),
     path('dashboard/', views.dashboard, name='dashboard'),
     path('admin-page/', views.admin_only_page, name='admin_page'),
-    path('donate/', views.donate, name='donate'),
-    path('success/', views.payment_success, name = 'success'),
+
+    path("donate/", views.donate, name="donate"),
+    path("success/", views.success, name="success"),
+    path("failed/", views.failed, name="failed"),
+    path("cancelled/", views.cancelled, name="cancelled"),
+
 
     path(
         'password-reset/',

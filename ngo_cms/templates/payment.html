@@ -3,58 +3,101 @@
 
 {% block content %}
 
-<div class="container py-5 text-center">
+<div class="container py-5">
+    <div class="row justify-content-center">
 
-    <div class="col-md-6 mx-auto">
+        <div class="col-md-7 col-lg-6">
 
-        <div class="card shadow border-0 rounded-4 p-5">
+            <div class="card shadow border-0 rounded-4">
+                <div class="card-body p-5 text-center">
 
-            <h2 class="text-success fw-bold">Complete Payment</h2>
+                    <h2 class="fw-bold text-success mb-3">
+                        Complete Payment 💳
+                    </h2>
 
-            <p class="text-muted mt-2">
-                Click below to securely pay with Razorpay.
-            </p>
+                    <p class="text-muted mb-1">
+                        Thank you for supporting our cause.
+                    </p>
 
-            <button id="rzp-button"
-                    class="btn btn-success btn-lg mt-3 px-5">
-                Pay Now
-            </button>
+                    <p class="mb-4">
+                        Amount:
+                        <span class="fw-bold text-success">
+                            ₹{{ donation.amount }}
+                        </span>
+                    </p>
+
+                    <button id="rzp-button"
+                            class="btn btn-success btn-lg px-5 py-2">
+                        Pay Now
+                    </button>
+
+                    <div class="mt-4 small text-muted">
+                        Secure payment powered by Razorpay
+                    </div>
+
+                </div>
+            </div>
 
         </div>
 
     </div>
-
 </div>
 
 <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
 
 <script>
 var options = {
-    "key": "{{ razorpay_key }}",
-    "amount": "{{ payment.amount }}",
-    "currency": "INR",
-    "name": "NGO CMS",
-    "description": "Donation Payment",
-    "order_id": "{{ payment.id }}",
+    key: "{{ razorpay_key }}",
+    amount: "{{ payment.amount }}",
+    currency: "INR",
+    name: "NGO CMS",
+    description: "Donation Payment",
+    order_id: "{{ payment.id }}",
 
-    "handler": function (response) {
+    handler: function (response) {
 
         var form = document.createElement("form");
         form.method = "POST";
-        form.action = "/success/";
+        form.action = "{% url 'success' %}";
 
-        var input = document.createElement("input");
-        input.type = "hidden";
-        input.name = "razorpay_payment_id";
-        input.value = response.razorpay_payment_id;
+        var csrf = document.createElement("input");
+        csrf.type = "hidden";
+        csrf.name = "csrfmiddlewaretoken";
+        csrf.value = "{{ csrf_token }}";
 
-        form.appendChild(input);
+        var payId = document.createElement("input");
+        payId.type = "hidden";
+        payId.name = "razorpay_payment_id";
+        payId.value = response.razorpay_payment_id;
+
+        var orderId = document.createElement("input");
+        orderId.type = "hidden";
+        orderId.name = "razorpay_order_id";
+        orderId.value = response.razorpay_order_id;
+
+        var sign = document.createElement("input");
+        sign.type = "hidden";
+        sign.name = "razorpay_signature";
+        sign.value = response.razorpay_signature;
+
+        form.appendChild(csrf);
+        form.appendChild(payId);
+        form.appendChild(orderId);
+        form.appendChild(sign);
+
         document.body.appendChild(form);
         form.submit();
     },
 
-    "theme": {
-        "color": "#198754"
+    modal: {
+        ondismiss: function () {
+            window.location.href =
+            "{% url 'cancelled' %}?order_id={{ payment.id }}";
+        }
+    },
+
+    theme: {
+        color: "#198754"
     }
 };
 
@@ -63,7 +106,7 @@ var rzp = new Razorpay(options);
 document.getElementById("rzp-button").onclick = function(e){
     rzp.open();
     e.preventDefault();
-}
+};
 </script>
 
 {% endblock %}

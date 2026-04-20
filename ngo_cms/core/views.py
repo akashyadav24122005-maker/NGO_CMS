@@ -8,6 +8,10 @@ from .models import BlogPost, Project, Donation, Volunteer
 from .forms import ContactForm, VolunteerForm
 import razorpay
 from django.conf import settings
+from django.shortcuts import render, redirect, get_object_or_404
+from .models import Donation
+from django.shortcuts import render, redirect
+
 
 def home(request):
     projects = Project.objects.filter(is_active=True)[:3]
@@ -55,46 +59,84 @@ def contact(request):
         "form": form
     })
 
+client = razorpay.Client(
+    auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET)
+)
+
 def donate(request):
     if request.method == "POST":
-        name = request.POST.get("name")
-        email = request.POST.get("email")
-        amount = int(request.POST.get("amount"))
+        name = request.POST['name']
+        email = request.POST['email']
+        amount = int(request.POST['amount']) * 100
 
-        # Save donation record
-        donation = Donation.objects.create(
-            donor_name=name,
-            email=email,
-            amount=amount
-        )
-
-        # Razorpay Client
-        client = razorpay.Client(
-            auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET)
-        )
-
-        # Create Order
-        payment = client.order.create({
-            "amount": amount * 100,   # paise
+        razorpay_order = client.order.create({
+            "amount": amount,
             "currency": "INR",
             "payment_capture": "1"
         })
 
-        context = {
-            "payment": payment,
-            "donation": donation,
-            "razorpay_key": settings.RAZORPAY_KEY_ID,
-            "amount": amount,
-        }
+        donation = Donation.objects.create(
+            donor_name=name,
+            email=email,
+            amount=amount // 100,
+            order_id=razorpay_order['id'],
+            status="Pending"
+        )
 
-        return render(request, "payment.html", context)
+        return render(request, "payment.html", {
+            "payment": razorpay_order,
+            "razorpay_key": settings.RAZORPAY_KEY_ID
+        })
 
     return render(request, "donate.html")
 
 
-def payment_success(request):
-    messages.success(request, "Payment successful. Thank you for donating!")
-    return render(request, "success.html")
+def success(request):
+    if request.method == "POST":
+        payment_id = request.POST.get("razorpay_payment_id")
+        order_id = request.POST.get("razorpay_order_id")
+        signature = request.POST.get("razorpay_signature")
+
+        params_dict = {
+            'razorpay_order_id': order_id,
+            'razorpay_payment_id': payment_id,
+            'razorpay_signature': signature
+        }
+
+        try:
+            client.utility.verify_payment_signature(params_dict)
+
+            donation = Donation.objects.get(order_id=order_id)
+            donation.payment_id = payment_id
+            donation.status = "Success"
+            donation.save()
+
+            return render(request, "success.html")
+
+        except:
+            donation = Donation.objects.get(order_id=order_id)
+            donation.status = "Failed"
+            donation.save()
+
+            return redirect("failed")
+
+
+def failed(request):
+    return render(request, "failed.html")
+
+
+def cancelled(request):
+    order_id = request.GET.get("order_id")
+
+    if order_id:
+        try:
+            donation = Donation.objects.get(order_id=order_id)
+            donation.status = "Cancelled"
+            donation.save()
+        except:
+            pass
+
+    return render(request, "cancelled.html")
 
 def volunteer(request):
     form = VolunteerForm(request.POST or None)

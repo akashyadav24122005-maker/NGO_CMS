@@ -1,4 +1,3 @@
-
 from django.db import models
 
 
@@ -16,7 +15,23 @@ class ContactMessage(models.Model):
 class Donation(models.Model):
     donor_name = models.CharField(max_length=100)
     email = models.EmailField()
-    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    amount = models.IntegerField()
+
+    order_id = models.CharField(max_length=200, blank=True, null=True)
+    payment_id = models.CharField(max_length=200, blank=True, null=True)
+    signature = models.CharField(max_length=500, blank=True, null=True)
+
+    status = models.CharField(
+        max_length=20,
+        choices=[
+            ('Pending', 'Pending'),
+            ('Success', 'Success'),
+            ('Failed', 'Failed'),
+            ('Cancelled', 'Cancelled'),
+        ],
+        default='Pending'
+    )
+
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
