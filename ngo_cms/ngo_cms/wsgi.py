@@ -7,7 +7,13 @@ https://docs.djangoproject.com/en/5.1/howto/deployment/wsgi/
 
 import os
 
+
+
+import pymysql                        # ← add this
+pymysql.install_as_MySQLdb()          # ← add this
+
 from django.core.wsgi import get_wsgi_application
+...
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'ngo_cms.settings')
 
