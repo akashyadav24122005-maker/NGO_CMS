@@ -12,7 +12,7 @@ SECRET_KEY = os.environ.get(
     'django-insecure-local-key'
 )
 
-DEBUG = os.environ.get('DEBUG', 'True') == 'True'
+DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 
@@ -93,17 +93,10 @@ TEMPLATES = [
 # DATABASE
 # ===============================
 DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.mysql',
-        'NAME': os.environ.get('MYSQL_DATABASE', 'your_db_name'),
-        'USER': os.environ.get('MYSQL_USER', 'your_user'),
-        'PASSWORD': os.environ.get('MYSQL_PASSWORD', 'your_password'),
-        'HOST': os.environ.get('MYSQL_HOST', 'localhost'),
-        'PORT': os.environ.get('MYSQL_PORT', '3306'),
-        'OPTIONS': {
-            'charset': 'utf8mb4',
-        }
-    }
+    'default': dj_database_url.config(
+        default=os.environ.get('DATABASE_URL'),
+        conn_max_age=600
+    )
 }
 
 
