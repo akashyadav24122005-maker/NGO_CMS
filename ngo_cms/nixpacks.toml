@@ -1,8 +1,2 @@
-﻿[phases.setup]
-nixPkgs = ["python313", "mariadb-client"]
-
-[phases.install]
-cmds = ["pip install -r requirements.txt"]
-
-[start]
-cmd = "python manage.py migrate && gunicorn ngo_cms.wsgi"
+﻿[start]
+cmd = "bash start.sh"
