@@ -86,14 +86,24 @@ TEMPLATES = [
 ]
 
 
+
+
+
 # ===============================
 # DATABASE
 # ===============================
 DATABASES = {
-    'default': dj_database_url.config(
-        default='mysql://root:1234@localhost:3306/ngo_db',
-        conn_max_age=600
-    )
+    'default': {
+        'ENGINE': 'django.db.backends.mysql',
+        'NAME': os.environ.get('MYSQL_DATABASE', 'your_db_name'),
+        'USER': os.environ.get('MYSQL_USER', 'your_user'),
+        'PASSWORD': os.environ.get('MYSQL_PASSWORD', 'your_password'),
+        'HOST': os.environ.get('MYSQL_HOST', 'localhost'),
+        'PORT': os.environ.get('MYSQL_PORT', '3306'),
+        'OPTIONS': {
+            'charset': 'utf8mb4',
+        }
+    }
 }
 
 
