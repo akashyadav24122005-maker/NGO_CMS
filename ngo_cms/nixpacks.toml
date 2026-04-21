@@ -1,8 +1,10 @@
-[phases.build]
-cmds = [
-  "pip install -r requirements.txt",
-  "python manage.py collectstatic --noinput"
-]
+
+
+[phases.setup]
+nixPkgs = ["mariadb-client"]
+
+[phases.install]
+cmds = ["pip install -r requirements.txt"]
 
 [start]
 cmd = "python manage.py migrate && gunicorn ngo_cms.wsgi"
