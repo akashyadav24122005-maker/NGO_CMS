@@ -1,83 +1,139 @@
-{% extends 'base.html' %}
+<!-- templates/volunteer.html  (Modified + Clean Final Version) -->
 
+{% extends 'base.html' %}
 {% block title %}Volunteer | NGO CMS{% endblock %}
 
 {% block content %}
 
 <div class="container py-5">
+
+    <!-- Heading -->
+    <div class="text-center mb-5">
+        <h1 class="fw-bold text-success">Join as Volunteer 🤝</h1>
+
+        <p class="text-muted fs-5">
+            Become part of our mission and help bring
+            positive change to the community.
+        </p>
+    </div>
+
+
     <div class="row justify-content-center">
+    <div class="col-md-8 col-lg-7">
 
-        <div class="col-md-7 col-lg-6">
+        <div class="card shadow border-0 rounded-4">
+        <div class="card-body p-4">
 
-            <div class="card shadow border-0 rounded-4">
-                <div class="card-body p-4">
+            <form method="POST">
+                {% csrf_token %}
 
-                    <!-- Heading -->
-                    <div class="text-center mb-4">
-                        <h2 class="fw-bold text-success">Volunteer Registration</h2>
-                        <p class="text-muted">
-                            Join us and make a positive impact in the community.
-                        </p>
+                <div class="row">
+
+                    <!-- Full Name -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">
+                            Full Name
+                        </label>
+
+                        <input
+                            type="text"
+                            name="full_name"
+                            class="form-control"
+                            placeholder="Enter Full Name"
+                            required
+                        >
                     </div>
 
-                    <form method="POST">
-                        {% csrf_token %}
+                    <!-- Email -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">
+                            Email Address
+                        </label>
 
-                        <!-- Full Name -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Full Name</label>
-                            <input type="text"
-                                   name="full_name"
-                                   class="form-control"
-                                   placeholder="Enter Full Name"
-                                   required>
-                        </div>
-
-                        <!-- Email -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Email</label>
-                            <input type="email"
-                                   name="email"
-                                   class="form-control"
-                                   placeholder="Enter Email Address"
-                                   required>
-                        </div>
-
-                        <!-- Phone -->
-                        <div class="mb-3">
-                            <label class="form-label fw-semibold">Phone Number</label>
-                            <input type="text"
-                                   name="phone"
-                                   class="form-control"
-                                   placeholder="Enter Phone Number"
-                                   required>
-                        </div>
-
-                        <!-- Interest -->
-                        <div class="mb-4">
-                            <label class="form-label fw-semibold">Area of Interest</label>
-                            <input type="text"
-                                   name="interest"
-                                   class="form-control"
-                                   placeholder="Education / Healthcare / Events / Support"
-                                   required>
-                        </div>
-
-                        <!-- Submit -->
-                        <div class="d-grid">
-                            <button type="submit" class="btn btn-success py-2 fw-bold">
-                                Submit
-                            </button>
-                        </div>
-
-                    </form>
+                        <input
+                            type="email"
+                            name="email"
+                            class="form-control"
+                            placeholder="Enter Email"
+                            required
+                        >
+                    </div>
 
                 </div>
-            </div>
+
+
+                <div class="row">
+
+                    <!-- Phone -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">
+                            Phone Number
+                        </label>
+
+                        <input
+                            type="text"
+                            name="phone"
+                            class="form-control"
+                            placeholder="Enter Phone Number"
+                            required
+                        >
+                    </div>
+
+                    <!-- Interest -->
+                    <div class="col-md-6 mb-3">
+                        <label class="form-label fw-semibold">
+                            Area of Interest
+                        </label>
+
+                        <input
+                            type="text"
+                            name="interest"
+                            class="form-control"
+                            placeholder="Education / Events / Health"
+                            required
+                        >
+                    </div>
+
+                </div>
+
+
+                <!-- Why Join -->
+                <div class="mb-4">
+                    <label class="form-label fw-semibold">
+                        Why do you want to join? (Optional)
+                    </label>
+
+                    <textarea
+                        class="form-control"
+                        rows="3"
+                        placeholder="Write your message..."
+                    ></textarea>
+                </div>
+
+
+                <!-- Submit -->
+                <div class="d-grid">
+                    <button
+                        type="submit"
+                        class="btn btn-success py-2 fw-bold"
+                    >
+                        Submit Form
+                    </button>
+                </div>
+
+            </form>
 
         </div>
+        </div>
+
+        <!-- Footer Note -->
+        <p class="text-center text-muted mt-3 small">
+            Our team will contact you soon after review.
+        </p>
 
     </div>
+    </div>
+
 </div>
 
 {% endblock %}

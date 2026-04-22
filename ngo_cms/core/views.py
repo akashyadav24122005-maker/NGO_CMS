@@ -1,51 +1,89 @@
-from django.shortcuts import render, redirect
+# core/views.py  (Modified + Clean Final Version)
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
-from django.contrib import messages
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
-from .models import BlogPost, Project, Donation, Volunteer
-from .forms import ContactForm, VolunteerForm
-import razorpay
 from django.conf import settings
-from django.shortcuts import render, redirect, get_object_or_404
-from .models import Donation
-from django.shortcuts import render, redirect
+
+import razorpay
+
+from .models import (
+    Banner,
+    VisionMission,
+    Statistic,
+    Initiative,
+    Donation,
+    Volunteer,
+    BlogPost,
+    Project,
+    ContactMessage,
+)
+from .forms import ContactForm, VolunteerForm
 
 
+# -------------------------
+# Razorpay Client
+# -------------------------
+client = razorpay.Client(
+    auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET)
+)
+
+
+# -------------------------
+# Frontend Pages
+# -------------------------
 def home(request):
-    projects = Project.objects.filter(is_active=True)[:3]
-    blogs = BlogPost.objects.all()[:3]
+    banners = Banner.objects.filter(status=True).order_by("order")
+    vm = VisionMission.objects.first()
+    stats = Statistic.objects.filter(status=True).order_by("order")
+    initiatives = Initiative.objects.filter(status=True).order_by("order")
 
-    return render(request, "home.html", {
+    projects = Project.objects.filter(is_active=True)[:3]
+    blogs = BlogPost.objects.all().order_by("-id")[:3]
+
+    context = {
+        "banners": banners,
+        "vm": vm,
+        "stats": stats,
+        "initiatives": initiatives,
         "projects": projects,
-        "blogs": blogs
-    })
+        "blogs": blogs,
+    }
+    return render(request, "home.html", context)
+
 
 def about(request):
     return render(request, "about.html")
 
+
 def our_work(request):
     return render(request, "our_work.html")
+
 
 def media(request):
     return render(request, "media.html")
 
+
 def get_involved(request):
     return render(request, "get_involved.html")
 
+
 def projects(request):
     all_projects = Project.objects.all()
-    return render(request, "projects.html", {
-        "projects": all_projects
-    })
+    return render(request, "projects.html", {"projects": all_projects})
+
 
 def blog(request):
     posts = BlogPost.objects.all().order_by("-id")
-    return render(request, "blog.html", {
-        "posts": posts
-    })
+    return render(request, "blog.html", {"posts": posts})
 
+
+# -------------------------
+# Contact
+# -------------------------
 def contact(request):
     form = ContactForm(request.POST or None)
 
@@ -55,31 +93,29 @@ def contact(request):
             messages.success(request, "Message sent successfully!")
             return redirect("contact")
 
-    return render(request, "contact.html", {
-        "form": form
-    })
+    return render(request, "contact.html", {"form": form})
 
-client = razorpay.Client(
-    auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET)
-)
 
+# -------------------------
+# Donation + Razorpay
+# -------------------------
 def donate(request):
     if request.method == "POST":
-        name = request.POST['name']
-        email = request.POST['email']
-        amount = int(request.POST['amount']) * 100
+        name = request.POST.get("name")
+        email = request.POST.get("email")
+        amount = int(request.POST.get("amount"))
 
         razorpay_order = client.order.create({
-            "amount": amount,
+            "amount": amount * 100,
             "currency": "INR",
             "payment_capture": "1"
         })
 
-        donation = Donation.objects.create(
+        Donation.objects.create(
             donor_name=name,
             email=email,
-            amount=amount // 100,
-            order_id=razorpay_order['id'],
+            amount=amount,
+            order_id=razorpay_order["id"],
             status="Pending"
         )
 
@@ -98,9 +134,9 @@ def success(request):
         signature = request.POST.get("razorpay_signature")
 
         params_dict = {
-            'razorpay_order_id': order_id,
-            'razorpay_payment_id': payment_id,
-            'razorpay_signature': signature
+            "razorpay_order_id": order_id,
+            "razorpay_payment_id": payment_id,
+            "razorpay_signature": signature
         }
 
         try:
@@ -108,6 +144,7 @@ def success(request):
 
             donation = Donation.objects.get(order_id=order_id)
             donation.payment_id = payment_id
+            donation.signature = signature
             donation.status = "Success"
             donation.save()
 
@@ -138,6 +175,10 @@ def cancelled(request):
 
     return render(request, "cancelled.html")
 
+
+# -------------------------
+# Volunteer
+# -------------------------
 def volunteer(request):
     form = VolunteerForm(request.POST or None)
 
@@ -147,10 +188,12 @@ def volunteer(request):
             messages.success(request, "Volunteer form submitted!")
             return redirect("volunteer")
 
-    return render(request, "volunteer.html", {
-        "form": form
-    })
+    return render(request, "volunteer.html", {"form": form})
 
+
+# -------------------------
+# Authentication
+# -------------------------
 def register_view(request):
     if request.method == "POST":
         username = request.POST.get("username").strip()
@@ -171,9 +214,11 @@ def register_view(request):
             password=password
         )
 
-        messages.success(request, "Registration successful. Please login.")
+        messages.success(request, "Registration successful!")
         return redirect("login")
+
     return render(request, "register.html")
+
 
 def login_view(request):
     if request.method == "POST":
@@ -185,6 +230,7 @@ def login_view(request):
             username=username,
             password=password
         )
+
         if user is not None:
             login(request, user)
             messages.success(request, "Login successful!")
@@ -194,6 +240,7 @@ def login_view(request):
 
     return render(request, "login.html")
 
+
 @login_required
 def logout_view(request):
     logout(request)
@@ -201,6 +248,9 @@ def logout_view(request):
     return redirect("login")
 
 
+# -------------------------
+# Dashboard
+# -------------------------
 @login_required
 def dashboard(request):
     context = {
@@ -209,9 +259,24 @@ def dashboard(request):
         "total_donations": Donation.objects.count(),
         "total_volunteers": Volunteer.objects.count(),
     }
-
     return render(request, "dashboard.html", context)
+
 
 @staff_member_required
 def admin_only_page(request):
     return render(request, "admin_page.html")
+
+
+# -------------------------
+# Banner CRUD Example
+# -------------------------
+def banner_list(request):
+    banners = Banner.objects.all().order_by("order")
+    return render(request, "dashboard/banner_list.html", {"banners": banners})
+
+
+def delete_banner(request, pk):
+    banner = get_object_or_404(Banner, id=pk)
+    banner.delete()
+    messages.success(request, "Banner deleted successfully!")
+    return redirect("banner_list")

@@ -1,6 +1,66 @@
+# core/models.py  (Modified + Clean Final Version)
+
 from django.db import models
 
 
+# -------------------------
+# Banner Slider
+# -------------------------
+class Banner(models.Model):
+    title = models.CharField(max_length=150)
+    description = models.TextField()
+    image = models.ImageField(upload_to="banners/")
+    order = models.PositiveIntegerField(default=0)
+    status = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title
+
+
+# -------------------------
+# Vision & Mission
+# -------------------------
+class VisionMission(models.Model):
+    vision_title = models.CharField(max_length=150)
+    vision_description = models.TextField()
+
+    mission_title = models.CharField(max_length=150)
+    mission_description = models.TextField()
+
+    def __str__(self):
+        return "Vision & Mission"
+
+
+# -------------------------
+# Statistics
+# -------------------------
+class Statistic(models.Model):
+    label = models.CharField(max_length=100)
+    value = models.CharField(max_length=50)
+    order = models.PositiveIntegerField(default=0)
+    status = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.label
+
+
+# -------------------------
+# Initiatives
+# -------------------------
+class Initiative(models.Model):
+    title = models.CharField(max_length=150)
+    description = models.TextField()
+    image = models.ImageField(upload_to="initiatives/")
+    order = models.PositiveIntegerField(default=0)
+    status = models.BooleanField(default=True)
+
+    def __str__(self):
+        return self.title
+
+
+# -------------------------
+# Contact Messages
+# -------------------------
 class ContactMessage(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
@@ -12,10 +72,13 @@ class ContactMessage(models.Model):
         return self.name
 
 
+# -------------------------
+# Donations
+# -------------------------
 class Donation(models.Model):
     donor_name = models.CharField(max_length=100)
     email = models.EmailField()
-    amount = models.IntegerField()
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
 
     order_id = models.CharField(max_length=200, blank=True, null=True)
     payment_id = models.CharField(max_length=200, blank=True, null=True)
@@ -24,20 +87,23 @@ class Donation(models.Model):
     status = models.CharField(
         max_length=20,
         choices=[
-            ('Pending', 'Pending'),
-            ('Success', 'Success'),
-            ('Failed', 'Failed'),
-            ('Cancelled', 'Cancelled'),
+            ("Pending", "Pending"),
+            ("Success", "Success"),
+            ("Failed", "Failed"),
+            ("Cancelled", "Cancelled"),
         ],
-        default='Pending'
+        default="Pending"
     )
 
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):
-        return f"{self.donor_name} - {self.amount}"
+        return f"{self.donor_name} - ₹{self.amount}"
 
 
+# -------------------------
+# Volunteers
+# -------------------------
 class Volunteer(models.Model):
     full_name = models.CharField(max_length=100)
     email = models.EmailField()
@@ -49,6 +115,9 @@ class Volunteer(models.Model):
         return self.full_name
 
 
+# -------------------------
+# Blog Posts
+# -------------------------
 class BlogPost(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
@@ -59,6 +128,9 @@ class BlogPost(models.Model):
         return self.title
 
 
+# -------------------------
+# Projects
+# -------------------------
 class Project(models.Model):
     title = models.CharField(max_length=200)
     description = models.TextField()

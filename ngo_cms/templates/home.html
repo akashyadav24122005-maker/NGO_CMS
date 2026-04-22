@@ -1,11 +1,12 @@
-{% extends 'base.html' %}
+<!-- templates/home.html  (Modified + Clean Final Version) -->
 
+{% extends 'base.html' %}
 {% block title %}Home | NGO CMS{% endblock %}
 
 {% block content %}
 
 <!-- Hero Section -->
-<div class="p-5 mb-5 text-center rounded shadow"
+<section class="p-5 mb-5 text-center rounded shadow"
 style="
 background-image: linear-gradient(rgba(0,0,0,0.55), rgba(0,0,0,0.55)),
 url('https://images.unsplash.com/photo-1523240795612-9a054b0db644');
@@ -14,68 +15,247 @@ background-position: center;
 color: white;
 ">
 
-    <h1 class="display-4 fw-bold">Welcome to NGO CMS</h1>
+<div class="container">
+    <h1 class="display-4 fw-bold">
+        Empowering Lives, Creating Opportunities
+    </h1>
+
     <p class="lead mt-3">
-        Helping communities through education, healthcare, and social initiatives.
+        Together we can create a better future through education,
+        healthcare and community support.
     </p>
 
     <div class="mt-4">
-        <a href="/volunteer/" class="btn btn-success btn-lg px-4 me-2">Become Volunteer</a>
-        <a href="{% url 'donate' %}" class="btn btn-primary btn-lg px-4">Donate Now</a>
+        <a href="{% url 'volunteer' %}"
+           class="btn btn-success btn-lg px-4 me-2">
+           Become Volunteer
+        </a>
+
+        <a href="{% url 'donate' %}"
+           class="btn btn-primary btn-lg px-4">
+           Donate Now
+        </a>
     </div>
 </div>
+</section>
 
-<!-- Impact Story -->
-<div class="text-center mb-4">
-    <h2 class="fw-bold">Our Impact Story</h2>
-    <p class="text-muted">Together we are changing lives every day.</p>
+
+<!-- Dynamic Banner Carousel -->
+{% if banners %}
+<div class="container mb-5">
+<div id="bannerCarousel"
+     class="carousel slide shadow rounded overflow-hidden"
+     data-bs-ride="carousel">
+
+<div class="carousel-inner">
+
+{% for banner in banners %}
+<div class="carousel-item {% if forloop.first %}active{% endif %}">
+    <img src="{{ banner.image.url }}"
+         class="d-block w-100"
+         style="height:450px; object-fit:cover;">
+
+    <div class="carousel-caption bg-dark bg-opacity-50 rounded p-3">
+        <h3>{{ banner.title }}</h3>
+        <p>{{ banner.description }}</p>
+    </div>
 </div>
+{% endfor %}
+
+</div>
+
+<button class="carousel-control-prev"
+        type="button"
+        data-bs-target="#bannerCarousel"
+        data-bs-slide="prev">
+<span class="carousel-control-prev-icon"></span>
+</button>
+
+<button class="carousel-control-next"
+        type="button"
+        data-bs-target="#bannerCarousel"
+        data-bs-slide="next">
+<span class="carousel-control-next-icon"></span>
+</button>
+
+</div>
+</div>
+{% endif %}
+
+
+<!-- Mission & Vision -->
+{% if vm %}
+<section class="py-5 bg-light rounded shadow-sm mb-5">
+<div class="container">
+
+<h2 class="text-center fw-bold mb-5">
+    Mission & Vision
+</h2>
 
 <div class="row g-4">
 
-    <!-- Card 1 -->
-    <div class="col-md-4">
-        <div class="card h-100 shadow border-0">
-            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQwxJ69t-l2Xyovaok2CnoF9lRK6tx4CKtpeg&s"
-                 class="card-img-top" height="260" style="object-fit:cover;">
-            <div class="card-body text-center">
-                <h5 class="fw-bold">Education for All</h5>
-                <p class="text-muted">Providing free education to underprivileged children.</p>
-            </div>
-        </div>
-    </div>
+<div class="col-md-6">
+<div class="card border-0 shadow h-100">
+<div class="card-body p-4">
+<h3 class="text-success">{{ vm.mission_title }}</h3>
+<p class="text-muted">{{ vm.mission_description }}</p>
+</div>
+</div>
+</div>
 
-    <!-- Card 2 -->
-    <div class="col-md-4">
-        <div class="card h-100 shadow border-0">
-            <img src="https://savioursfoundation.org/wp-content/uploads/2020/03/Health.jpg"
-                 class="card-img-top" height="260" style="object-fit:cover;">
-            <div class="card-body text-center">
-                <h5 class="fw-bold">Healthcare Support</h5>
-                <p class="text-muted">Free medical camps and health support in rural areas.</p>
-            </div>
-        </div>
-    </div>
-
-    <!-- Card 3 -->
-    <div class="col-md-4">
-        <div class="card h-100 shadow border-0">
-            <img src="https://annamrita.org/wp-content/uploads/2023/02/Everything-you-need-to-know-about-the-functions-of-a-food-NGO.jpg"
-                 class="card-img-top" height="260" style="object-fit:cover;">
-            <div class="card-body text-center">
-                <h5 class="fw-bold">Food Distribution</h5>
-                <p class="text-muted">Meals and food kits for families in need.</p>
-            </div>
-        </div>
-    </div>
+<div class="col-md-6">
+<div class="card border-0 shadow h-100">
+<div class="card-body p-4">
+<h3 class="text-success">{{ vm.vision_title }}</h3>
+<p class="text-muted">{{ vm.vision_description }}</p>
+</div>
+</div>
+</div>
 
 </div>
+</div>
+</section>
+{% endif %}
+
+
+<!-- Statistics -->
+{% if stats %}
+<section class="py-5">
+<div class="container">
+
+<h2 class="text-center fw-bold mb-5">
+    Our Impact
+</h2>
+
+<div class="row g-4 text-center">
+
+{% for stat in stats %}
+<div class="col-md-3 col-6">
+<div class="p-4 bg-white shadow rounded h-100">
+<h3 class="text-success fw-bold">
+    {{ stat.value }}
+</h3>
+<p class="mb-0">{{ stat.label }}</p>
+</div>
+</div>
+{% endfor %}
+
+</div>
+</div>
+</section>
+{% endif %}
+
+
+<!-- Initiatives -->
+{% if initiatives %}
+<section class="py-5 bg-light rounded shadow-sm">
+<div class="container">
+
+<h2 class="text-center fw-bold mb-5">
+    Our Initiatives
+</h2>
+
+<div class="row g-4">
+
+{% for item in initiatives %}
+<div class="col-md-4">
+<div class="card shadow border-0 h-100">
+
+<img src="{{ item.image.url }}"
+     class="card-img-top"
+     style="height:250px; object-fit:cover;">
+
+<div class="card-body text-center">
+<h5 class="fw-bold">{{ item.title }}</h5>
+<p class="text-muted">{{ item.description }}</p>
+</div>
+
+</div>
+</div>
+{% endfor %}
+
+</div>
+</div>
+</section>
+{% endif %}
+
+
+<!-- Projects -->
+{% if projects %}
+<section class="py-5">
+<div class="container">
+
+<h2 class="text-center fw-bold mb-5">
+    Latest Projects
+</h2>
+
+<div class="row g-4">
+
+{% for project in projects %}
+<div class="col-md-4">
+<div class="card border-0 shadow h-100">
+<div class="card-body">
+<h5 class="fw-bold">{{ project.title }}</h5>
+<p>{{ project.description|truncatewords:20 }}</p>
+<p class="text-muted">
+📍 {{ project.location }}
+</p>
+</div>
+</div>
+</div>
+{% endfor %}
+
+</div>
+</div>
+</section>
+{% endif %}
+
+
+<!-- Blog -->
+{% if blogs %}
+<section class="py-5 bg-light rounded shadow-sm">
+<div class="container">
+
+<h2 class="text-center fw-bold mb-5">
+    Latest Blog Posts
+</h2>
+
+<div class="row g-4">
+
+{% for post in blogs %}
+<div class="col-md-4">
+<div class="card border-0 shadow h-100">
+
+{% if post.image %}
+<img src="{{ post.image.url }}"
+     class="card-img-top"
+     style="height:220px; object-fit:cover;">
+{% endif %}
+
+<div class="card-body">
+<h5 class="fw-bold">{{ post.title }}</h5>
+<p>{{ post.content|truncatewords:20 }}</p>
+</div>
+
+</div>
+</div>
+{% endfor %}
+
+</div>
+</div>
+</section>
+{% endif %}
+
 
 <!-- Bottom Message -->
-<div class="mt-5 p-4 bg-light rounded text-center shadow-sm">
-    <p class="mb-0 fs-5">
-        Thanks to our volunteers and donors, we have helped thousands of families gain access to education, healthcare, and food support.
-    </p>
+<section class="mt-5 p-4 bg-success text-white rounded text-center shadow">
+<div class="container">
+<p class="mb-0 fs-5">
+Thanks to our donors and volunteers, we have helped
+thousands of families with education, healthcare,
+food support and hope for a better future.
+</p>
 </div>
+</section>
 
 {% endblock %}
