@@ -84,4 +84,23 @@ urlpatterns = [
         ),
         name="password_reset_complete"
     ),
+
+    # Add these in core/urls.py
+    path('dashboard/vision/', views.vision_list, name='vision_list'),
+    path('dashboard/vision/add/', views.vision_add, name='vision_add'),
+    path('dashboard/vision/edit/<int:pk>/', views.vision_edit, name='vision_edit'),
+    path('dashboard/vision/delete/<int:pk>/', views.vision_delete, name='vision_delete'),
+
+    path('dashboard/statistics/', views.statistic_list, name='statistic_list'),
+    path('dashboard/statistics/add/', views.statistic_add, name='statistic_add'),
+    path('dashboard/statistics/edit/<int:pk>/', views.statistic_edit, name='statistic_edit'),
+    path('dashboard/statistics/delete/<int:pk>/', views.statistic_delete, name='statistic_delete'),
+
+    path('dashboard/initiatives/', views.initiative_list, name='initiative_list'),
+    path('dashboard/projects/', views.project_list, name='project_list'),
+     
+    path('dashboard/blogs/', views.blog_admin_list, name='blog_admin_list'),
+    path('dashboard/messages/', views.contact_list, name='contact_list'),
+    path('dashboard/volunteers/', views.volunteer_list, name='volunteer_list'),
+    path('dashboard/donations/', views.donation_list, name='donation_list'),
 ]

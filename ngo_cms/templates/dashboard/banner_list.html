@@ -1,0 +1,49 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Manage Banners | NGO CMS{% endblock %}
+{% block page_title %}Manage Image Slider{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header"><i class="fas fa-plus me-2"></i>Add New Banner</div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" action="/dashboard/banners/add/">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small">{{ field.label }}</label>
+                        {{ field }}
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary w-100">Save Banner</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header"><i class="fas fa-list me-2"></i>All Banners</div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead><tr><th>Sr.No</th><th>Name</th><th>Image</th><th>Status</th><th>Edit</th><th>Delete</th></tr></thead>
+                    <tbody>
+                    {% for banner in banners %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ banner.title }}</td>
+                        <td>{% if banner.image %}<img src="{{ banner.image.url }}" width="80" height="50" style="object-fit:cover;border-radius:5px;">{% endif %}</td>
+                        <td>{% if banner.status %}<span class="badge-ok">Active</span>{% else %}<span class="badge-bad">Inactive</span>{% endif %}</td>
+                        <td><a href="/dashboard/banners/edit/{{ banner.pk }}/" class="btn btn-sm btn-warning">Edit</a></td>
+                        <td><a href="/dashboard/banners/delete/{{ banner.pk }}/" class="btn btn-sm btn-danger" onclick="return confirm('Delete?')">Delete</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="6" class="text-center text-muted py-4">No banners yet.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

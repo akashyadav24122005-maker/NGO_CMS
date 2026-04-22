@@ -1,0 +1,26 @@
+{% extends 'base_dashboard.html' %}
+{% block page_title %}Manage Volunteers{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header"><i class="fas fa-users me-2"></i>All Volunteers</div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead><tr><th>#</th><th>Name</th><th>Email</th><th>Phone</th><th>Skills</th><th>Date</th></tr></thead>
+            <tbody>
+            {% for v in data %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td>{{ v.full_name }}</td>
+                <td>{{ v.email }}</td>
+                <td>{{ v.phone }}</td>
+                <td>{{ v.interest|truncatechars:40 }}</td>
+                <td>{{ v.created_at|date:"d M Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="text-center text-muted py-4">No volunteers yet.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

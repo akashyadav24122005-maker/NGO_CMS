@@ -1,0 +1,47 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Projects | NGO CMS{% endblock %}
+{% block page_title %}Manage Projects{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-md-4">
+        <div class="card">
+            <div class="card-header"><i class="fas fa-plus me-2"></i>Add Project</div>
+            <div class="card-body">
+                <form method="post" enctype="multipart/form-data" action="/dashboard/projects/add/">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small">{{ field.label }}</label>
+                        {{ field }}
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary w-100">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header"><i class="fas fa-list me-2"></i>All Projects</div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead><tr><th>Sr.No</th><th>Title</th><th>Edit</th><th>Delete</th></tr></thead>
+                    <tbody>
+                    {% for item in data %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ item }}</td>
+                        <td><a href="/dashboard/projects/edit/{{ item.pk }}/" class="btn btn-sm btn-warning">Edit</a></td>
+                        <td><a href="/dashboard/projects/delete/{{ item.pk }}/" class="btn btn-sm btn-danger" onclick="return confirm('Delete?')">Delete</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="4" class="text-center text-muted py-4">No projects yet.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

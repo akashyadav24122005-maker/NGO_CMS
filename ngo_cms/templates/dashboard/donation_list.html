@@ -1,0 +1,30 @@
+{% extends 'base_dashboard.html' %}
+{% block page_title %}Donations{% endblock %}
+{% block content %}
+<div class="card">
+    <div class="card-header"><i class="fas fa-donate me-2"></i>All Donations</div>
+    <div class="table-responsive">
+        <table class="table table-hover mb-0">
+            <thead><tr><th>#</th><th>Amount</th><th>Order ID</th><th>Payment ID</th><th>Status</th><th>Date</th></tr></thead>
+            <tbody>
+            {% for d in data %}
+            <tr>
+                <td>{{ forloop.counter }}</td>
+                <td><strong>₹{{ d.amount }}</strong></td>
+                <td><small>{{ d.order_id }}</small></td>
+                <td><small>{{ d.payment_id }}</small></td>
+                <td>
+                    {% if d.status == 'completed' %}<span class="badge-ok">Completed</span>
+                    {% elif d.status == 'cancelled' %}<span class="badge-bad">Cancelled</span>
+                    {% else %}<span class="badge-mid">Pending</span>{% endif %}
+                </td>
+                <td>{{ d.created_at|date:"d M Y" }}</td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="6" class="text-center text-muted py-4">No donations yet.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}

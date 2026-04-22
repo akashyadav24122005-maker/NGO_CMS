@@ -1,0 +1,48 @@
+{% extends 'base_dashboard.html' %}
+{% block title %}Vision & Mission | NGO CMS{% endblock %}
+{% block page_title %}Vision & Mission{% endblock %}
+
+{% block content %}
+<div class="row g-4">
+    <div class="col-md-5">
+        <div class="card">
+            <div class="card-header"><i class="fas fa-eye me-2"></i>Set Vision & Mission</div>
+            <div class="card-body">
+                <form method="post" action="/dashboard/vision/add/">
+                    {% csrf_token %}
+                    {% for field in form %}
+                    <div class="mb-3">
+                        <label class="form-label fw-semibold small">{{ field.label }}</label>
+                        {{ field }}
+                    </div>
+                    {% endfor %}
+                    <button type="submit" class="btn btn-primary w-100">Save</button>
+                </form>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-7">
+        <div class="card">
+            <div class="card-header"><i class="fas fa-list me-2"></i>Records</div>
+            <div class="card-body p-0">
+                <table class="table table-hover mb-0">
+                    <thead><tr><th>Sr.No</th><th>Vision</th><th>Mission</th><th>Edit</th><th>Delete</th></tr></thead>
+                    <tbody>
+                    {% for item in data %}
+                    <tr>
+                        <td>{{ forloop.counter }}</td>
+                        <td>{{ item.vision_description|truncatechars:35 }}</td>
+                        <td>{{ item.mission_description|truncatechars:35 }}</td>
+                        <td><a href="/dashboard/vision/edit/{{ item.pk }}/" class="btn btn-sm btn-warning">Edit</a></td>
+                        <td><a href="/dashboard/vision/delete/{{ item.pk }}/" class="btn btn-sm btn-danger" onclick="return confirm('Delete?')">Delete</a></td>
+                    </tr>
+                    {% empty %}
+                    <tr><td colspan="5" class="text-center text-muted py-4">No records yet.</td></tr>
+                    {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

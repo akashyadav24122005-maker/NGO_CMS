@@ -1,5 +1,3 @@
-# core/views.py  (Modified + Clean Final Version)
-
 from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib import messages
 from django.contrib.auth import authenticate, login, logout
@@ -23,18 +21,23 @@ from .models import (
 )
 from .forms import ContactForm, VolunteerForm
 
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from .forms import (
+    VisionMissionForm, StatisticForm, InitiativeForm,
+    ProjectForm, BlogPostForm
+)
+from .models import (
+    VisionMission, Statistic, Initiative,
+    Project, BlogPost, ContactMessage
+)
 
-# -------------------------
-# Razorpay Client
-# -------------------------
+
 client = razorpay.Client(
     auth=(settings.RAZORPAY_KEY_ID, settings.RAZORPAY_KEY_SECRET)
 )
 
 
-# -------------------------
-# Frontend Pages
-# -------------------------
 def home(request):
     banners = Banner.objects.filter(status=True).order_by("order")
     vm = VisionMission.objects.first()
@@ -81,9 +84,6 @@ def blog(request):
     return render(request, "blog.html", {"posts": posts})
 
 
-# -------------------------
-# Contact
-# -------------------------
 def contact(request):
     form = ContactForm(request.POST or None)
 
@@ -95,10 +95,6 @@ def contact(request):
 
     return render(request, "contact.html", {"form": form})
 
-
-# -------------------------
-# Donation + Razorpay
-# -------------------------
 def donate(request):
     if request.method == "POST":
         name = request.POST.get("name")
@@ -175,10 +171,6 @@ def cancelled(request):
 
     return render(request, "cancelled.html")
 
-
-# -------------------------
-# Volunteer
-# -------------------------
 def volunteer(request):
     form = VolunteerForm(request.POST or None)
 
@@ -190,10 +182,6 @@ def volunteer(request):
 
     return render(request, "volunteer.html", {"form": form})
 
-
-# -------------------------
-# Authentication
-# -------------------------
 def register_view(request):
     if request.method == "POST":
         username = request.POST.get("username").strip()
@@ -247,10 +235,6 @@ def logout_view(request):
     messages.success(request, "Logged out successfully!")
     return redirect("login")
 
-
-# -------------------------
-# Dashboard
-# -------------------------
 @login_required
 def dashboard(request):
     context = {
@@ -259,6 +243,9 @@ def dashboard(request):
         "total_donations": Donation.objects.count(),
         "total_volunteers": Volunteer.objects.count(),
     }
+    # FROM:
+    return render(request, "dashboard.html", context)
+    # TO: (no change needed here since dashboard.html is in templates/)
     return render(request, "dashboard.html", context)
 
 
@@ -266,10 +253,6 @@ def dashboard(request):
 def admin_only_page(request):
     return render(request, "admin_page.html")
 
-
-# -------------------------
-# Banner CRUD Example
-# -------------------------
 def banner_list(request):
     banners = Banner.objects.all().order_by("order")
     return render(request, "dashboard/banner_list.html", {"banners": banners})
@@ -280,3 +263,166 @@ def delete_banner(request, pk):
     banner.delete()
     messages.success(request, "Banner deleted successfully!")
     return redirect("banner_list")
+
+
+@login_required
+def vision_list(request):
+    data = VisionMission.objects.all()
+    return render(request, 'dashboard/vision_list.html', {'data': data})
+
+@login_required
+def vision_add(request):
+    form = VisionMissionForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect('vision_list')
+    return render(request, 'dashboard/form.html', {'form': form, 'title': 'Add Vision'})
+
+@login_required
+def vision_edit(request, pk):
+    obj = get_object_or_404(VisionMission, pk=pk)
+    form = VisionMissionForm(request.POST or None, instance=obj)
+    if form.is_valid():
+        form.save()
+        return redirect('vision_list')
+    return render(request, 'dashboard/form.html', {'form': form, 'title': 'Edit Vision'})
+
+@login_required
+def vision_delete(request, pk):
+    get_object_or_404(VisionMission, pk=pk).delete()
+    return redirect('vision_list')
+
+@login_required
+def statistic_list(request):
+    data = Statistic.objects.all()
+    return render(request, 'dashboard/statistic_list.html', {'data': data})
+
+@login_required
+def statistic_add(request):
+    form = StatisticForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect('statistic_list')
+    return render(request, 'dashboard/form.html', {'form': form, 'title': 'Add Statistic'})
+
+@login_required
+def statistic_edit(request, pk):
+    obj = get_object_or_404(Statistic, pk=pk)
+    form = StatisticForm(request.POST or None, instance=obj)
+    if form.is_valid():
+        form.save()
+        return redirect('statistic_list')
+    return render(request, 'dashboard/form.html', {'form': form, 'title': 'Edit Statistic'})
+
+@login_required
+def statistic_delete(request, pk):
+    get_object_or_404(Statistic, pk=pk).delete()
+    return redirect('statistic_list')
+
+
+# Initiative CRUD
+@login_required
+def initiative_list(request):
+    data = Initiative.objects.all()
+    return render(request, 'dashboard/initiative_list.html', {'data': data})
+
+@login_required
+def initiative_add(request):
+    form = InitiativeForm(request.POST or None, request.FILES or None)
+    if form.is_valid():
+        form.save()
+        return redirect('initiative_list')
+    return render(request, 'dashboard/form.html', {'form': form, 'title': 'Add Initiative'})
+
+@login_required
+def initiative_edit(request, pk):
+    obj = get_object_or_404(Initiative, pk=pk)
+    form = InitiativeForm(request.POST or None, request.FILES or None, instance=obj)
+    if form.is_valid():
+        form.save()
+        return redirect('initiative_list')
+    return render(request, 'dashboard/form.html', {'form': form, 'title': 'Edit Initiative'})
+
+@login_required
+def initiative_delete(request, pk):
+    get_object_or_404(Initiative, pk=pk).delete()
+    return redirect('initiative_list')
+
+# Project CRUD
+@login_required
+def project_list(request):
+    data = Project.objects.all()
+    return render(request, 'dashboard/project_list.html', {'data': data})
+
+@login_required
+def project_add(request):
+    form = ProjectForm(request.POST or None)
+    if form.is_valid():
+        form.save()
+        return redirect('project_list')
+    return render(request, 'dashboard/form.html', {'form': form, 'title': 'Add Project'})
+
+@login_required
+def project_edit(request, pk):
+    obj = get_object_or_404(Project, pk=pk)
+    form = ProjectForm(request.POST or None, instance=obj)
+    if form.is_valid():
+        form.save()
+        return redirect('project_list')
+    return render(request, 'dashboard/form.html', {'form': form, 'title': 'Edit Project'})
+
+@login_required
+def project_delete(request, pk):
+    get_object_or_404(Project, pk=pk).delete()
+    return redirect('project_list')
+
+
+# Blog CRUD
+@login_required
+def blog_admin_list(request):
+    data = BlogPost.objects.all()
+    return render(request, 'dashboard/blog_list.html', {'data': data})
+
+@login_required
+def blog_add(request):
+    form = BlogPostForm(request.POST or None, request.FILES or None)
+    if form.is_valid():
+        form.save()
+        return redirect('blog_admin_list')
+    return render(request, 'dashboard/form.html', {'form': form, 'title': 'Add Blog'})
+
+@login_required
+def blog_edit(request, pk):
+    obj = get_object_or_404(BlogPost, pk=pk)
+    form = BlogPostForm(request.POST or None, request.FILES or None, instance=obj)
+    if form.is_valid():
+        form.save()
+        return redirect('blog_admin_list')
+    return render(request, 'dashboard/form.html', {'form': form, 'title': 'Edit Blog'})
+
+@login_required
+def blog_delete(request, pk):
+    get_object_or_404(BlogPost, pk=pk).delete()
+    return redirect('blog_admin_list')
+
+# Contact Messages
+@login_required
+def contact_list(request):
+    data = ContactMessage.objects.all().order_by('-id')
+    return render(request, 'dashboard/contact_list.html', {'data': data})
+
+@login_required
+def contact_delete(request, pk):
+    get_object_or_404(ContactMessage, pk=pk).delete()
+    return redirect('contact_list')
+
+
+@login_required
+def volunteer_list(request):
+    data = Volunteer.objects.all().order_by('-created_at')
+    return render(request, 'dashboard/volunteer_list.html', {'data': data})
+
+@login_required
+def donation_list(request):
+    data = Donation.objects.all().order_by('-created_at')
+    return render(request, 'dashboard/donation_list.html', {'data': data})
