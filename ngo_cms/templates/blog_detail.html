@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block title %}{{ blog.title }} | NGO CMS{% endblock %}
+{% block content %}
+
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+
+            <!-- Main Content -->
+            <div class="col-md-8">
+                <div class="card border-0 shadow-sm" style="border-radius:12px;">
+                    {% if blog.image %}
+                    <img src="{{ blog.image.url }}"
+                         class="card-img-top"
+                         style="border-radius:12px 12px 0 0;
+                                max-height:400px; object-fit:cover;">
+                    {% endif %}
+                    <div class="card-body p-4">
+                        <h2 class="fw-bold mb-2">{{ blog.title }}</h2>
+                        <p class="text-muted small mb-4">
+                            <i class="fas fa-calendar-alt me-1"></i>
+                            {{ blog.created_at|date:"d M Y" }}
+                        </p>
+                        <hr>
+                        <div style="line-height:1.9; font-size:1.05rem;">
+                            {{ blog.content|linebreaks }}
+                        </div>
+                        <hr>
+                        <a href="{% url 'blog_list' %}"
+                           class="btn"
+                           style="background:#1a6b3c; color:white; border-radius:20px;">
+                            ← Back to Blog
+                        </a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Sidebar -->
+            <div class="col-md-4">
+                <div class="card border-0 shadow-sm p-3"
+                     style="border-radius:12px;">
+                    <h6 class="fw-bold mb-3"
+                        style="color:#1a6b3c; border-bottom:2px solid #e8a020;
+                               padding-bottom:8px;">
+                        Recent Posts
+                    </h6>
+                    {% for post in recent %}
+                    <div class="mb-3 d-flex gap-3 align-items-start">
+                        {% if post.image %}
+                        <img src="{{ post.image.url }}"
+                             width="60" height="60"
+                             style="object-fit:cover; border-radius:8px; flex-shrink:0;">
+                        {% endif %}
+                        <div>
+                            <a href="{% url 'blog_detail' post.pk %}"
+                               class="text-decoration-none fw-semibold"
+                               style="color:#1a6b3c; font-size:0.88rem;">
+                                {{ post.title|truncatechars:50 }}
+                            </a>
+                            <p class="text-muted mb-0"
+                               style="font-size:0.78rem;">
+                                {{ post.created_at|date:"d M Y" }}
+                            </p>
+                        </div>
+                    </div>
+                    {% empty %}
+                    <p class="text-muted small">No recent posts.</p>
+                    {% endfor %}
+                </div>
+
+                <!-- CTA Box -->
+                <div class="card border-0 mt-3 p-4 text-center text-white"
+                     style="background:linear-gradient(135deg,#1a6b3c,#2e7d52);
+                            border-radius:12px;">
+                    <h6 class="fw-bold">Support Our Cause</h6>
+                    <p style="font-size:0.85rem; opacity:0.9;">
+                        Help us make a difference
+                    </p>
+                    <a href="/donate/"
+                       class="btn btn-light btn-sm fw-bold"
+                       style="border-radius:20px;">
+                        Donate Now
+                    </a>
+                </div>
+            </div>
+
+        </div>
+    </div>
+</section>
+
+{% endblock %}

@@ -91,12 +91,14 @@ data-bs-target="#navbarNav"
 <a class="nav-link" href="{% url 'about' %}">About</a>
 </li>
 
+<!-- ✅ FIXED: was 'projects' → now 'projects_list' -->
 <li class="nav-item">
-<a class="nav-link" href="{% url 'projects' %}">Projects</a>
+<a class="nav-link" href="{% url 'projects_list' %}">Projects</a>
 </li>
 
+<!-- ✅ FIXED: was 'blog' → now 'blog_list' -->
 <li class="nav-item">
-<a class="nav-link" href="{% url 'blog' %}">Blog</a>
+<a class="nav-link" href="{% url 'blog_list' %}">Blog</a>
 </li>
 
 <li class="nav-item">
@@ -121,7 +123,7 @@ data-bs-target="#navbarNav"
 </li>
 {% else %}
 <li class="nav-item">
-<a class="nav-link" href="{% url 'login' %}">Login</a>
+<a class="nav-link" href="{% url 'logout' %}">Login</a>
 </li>
 {% endif %}
 

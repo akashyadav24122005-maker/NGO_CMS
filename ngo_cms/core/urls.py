@@ -114,4 +114,11 @@ urlpatterns = [
     path('dashboard/about/core-value/edit/<int:pk>/', views.edit_core_value, name='edit_core_value'),
     path('dashboard/about/program/edit/<int:pk>/', views.edit_program, name='edit_program'),
     path('dashboard/about/team/edit/<int:pk>/', views.edit_team_member, name='edit_team_member'),
+
+
+    path('blog/', views.blog_list, name='blog_list'),
+    path('blog/<int:pk>/', views.blog_detail, name='blog_detail'),
+
+    path('projects/', views.projects_list, name='projects_list'),
+    path('projects/<int:pk>/', views.project_detail, name='project_detail'),
 ]

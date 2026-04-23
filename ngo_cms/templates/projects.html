@@ -1,136 +1,91 @@
 {% extends 'base.html' %}
-
-{% block title %}Our Work | NGO CMS{% endblock %}
-
+{% block title %}Projects | NGO CMS{% endblock %}
 {% block content %}
 
-<div class="container py-4">
-
-    <!-- Heading -->
-    <div class="text-center mb-5">
-        <h1 class="fw-bold text-success">Our Work</h1>
-        <p class="text-muted fs-5">
-            Empowering communities through education, healthcare and sustainable livelihood programs.
+<!-- Hero -->
+<section style="background:linear-gradient(135deg,#1a6b3c,#2e7d52);
+                color:white; padding:60px 0; text-align:center;">
+    <div class="container">
+        <h1 class="fw-bold">Our Projects</h1>
+        <p style="opacity:0.9;">
+            Discover the work we are doing to transform communities
         </p>
     </div>
+</section>
 
-    <!-- Programs Section -->
-    <div class="row g-4">
-
-        <!-- Education -->
-        <div class="col-md-4">
-            <div class="card shadow border-0 h-100">
-                <img src="https://images.unsplash.com/photo-1588072432836-e10032774350"
-                     class="card-img-top" height="240" style="object-fit:cover;">
-                <div class="card-body text-center">
-                    <h4 class="fw-bold">Education Programs</h4>
-                    <p class="text-muted">
-                        Free education, books, scholarships and digital learning opportunities
-                        for underprivileged children.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Healthcare -->
-        <div class="col-md-4">
-            <div class="card shadow border-0 h-100">
-                <img src="https://images.unsplash.com/photo-1584515933487-779824d29309"
-                     class="card-img-top" height="240" style="object-fit:cover;">
-                <div class="card-body text-center">
-                    <h4 class="fw-bold">Healthcare Initiatives</h4>
-                    <p class="text-muted">
-                        Medical camps, mobile clinics, health checkups and awareness drives
-                        in rural and marginalized communities.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-        <!-- Livelihood -->
-        <div class="col-md-4">
-            <div class="card shadow border-0 h-100">
-                <img src="https://images.unsplash.com/photo-1600880292203-757bb62b4baf"
-                     class="card-img-top" height="240" style="object-fit:cover;">
-                <div class="card-body text-center">
-                    <h4 class="fw-bold">Livelihood Programs</h4>
-                    <p class="text-muted">
-                        Vocational training, entrepreneurship support and job opportunities
-                        for women and marginalized groups.
-                    </p>
-                </div>
-            </div>
-        </div>
-
-    </div>
-
-    <!-- Impact Stats -->
-    <div class="mt-5">
-        <div class="text-center mb-4">
-            <h2 class="fw-bold text-success">Our Impact</h2>
-            <p class="text-muted">A glimpse of the lives we have transformed together.</p>
-        </div>
-
-        <div class="row g-4 text-center">
-
-            <div class="col-md-3">
-                <div class="card shadow border-0 p-4">
-                    <h2 class="text-success fw-bold">5000+</h2>
-                    <p class="mb-0">Children Educated</p>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card shadow border-0 p-4">
-                    <h2 class="text-success fw-bold">120+</h2>
-                    <p class="mb-0">Health Camps</p>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card shadow border-0 p-4">
-                    <h2 class="text-success fw-bold">2000+</h2>
-                    <p class="mb-0">Families Supported</p>
-                </div>
-            </div>
-
-            <div class="col-md-3">
-                <div class="card shadow border-0 p-4">
-                    <h2 class="text-success fw-bold">300+</h2>
-                    <p class="mb-0">Women Trained</p>
-                </div>
-            </div>
-
-        </div>
-    </div>
-
-    <!-- Gallery -->
-    <div class="mt-5">
-        <div class="text-center mb-4">
-            <h2 class="fw-bold text-success">Gallery</h2>
-            <p class="text-muted">Moments from our programs and community outreach.</p>
-        </div>
-
+<!-- Projects Grid -->
+<section class="py-5">
+    <div class="container">
         <div class="row g-4">
-
+            {% for project in projects %}
             <div class="col-md-4">
-                <img src="https://images.unsplash.com/photo-1509062522246-3755977927d7"
-                     class="img-fluid rounded shadow w-100" height="250" style="object-fit:cover;">
+                <div class="card h-100 border-0 shadow-sm"
+                     style="border-radius:12px; overflow:hidden;
+                            transition:transform 0.3s;"
+                     onmouseover="this.style.transform='translateY(-6px)'"
+                     onmouseout="this.style.transform='translateY(0)'">
+                    {% if project.image %}
+                    <img src="{{ project.image.url }}"
+                         class="card-img-top" height="210"
+                         style="object-fit:cover;">
+                    {% else %}
+                    <div style="height:210px; background:#e8f5e9;
+                                display:flex; align-items:center;
+                                justify-content:center;">
+                        <i class="fas fa-project-diagram"
+                           style="font-size:3rem; color:#1a6b3c; opacity:0.4;"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body p-4">
+                        <h5 class="fw-bold mb-2">{{ project.title }}</h5>
+                        {% if project.location %}
+                        <p class="text-muted small mb-2">
+                            <i class="fas fa-map-marker-alt me-1"
+                               style="color:#1a6b3c;"></i>
+                            {{ project.location }}
+                        </p>
+                        {% endif %}
+                        <p class="text-muted small">
+                            {{ project.description|truncatechars:100 }}
+                        </p>
+                    </div>
+                    <div class="card-footer bg-white border-0 p-4 pt-0">
+                        <a href="{% url 'project_detail' project.pk %}"
+                           class="btn btn-sm"
+                           style="background:#1a6b3c; color:white;
+                                  border-radius:20px; padding:6px 20px;">
+                            See Details
+                        </a>
+                    </div>
+                </div>
             </div>
-
-            <div class="col-md-4">
-                <img src="https://images.unsplash.com/photo-1526256262350-7da7584cf5eb"
-                     class="img-fluid rounded shadow w-100" height="250" style="object-fit:cover;">
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-project-diagram fa-3x text-muted mb-3 d-block"></i>
+                <p class="text-muted">No projects added yet.</p>
             </div>
-
-            <div class="col-md-4">
-                <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTKOYgpHP-60keqY4ID-SIn7QKcCrtqoMHgiw&s"
-                     class="img-fluid rounded shadow w-100" height="250" style="object-fit:cover;">
-            </div>
-
+            {% endfor %}
         </div>
     </div>
+</section>
 
-</div>
+<!-- CTA -->
+<section style="background:#f4f6f9; padding:50px 0; text-align:center;">
+    <div class="container">
+        <h4 class="fw-bold mb-3" style="color:#1a6b3c;">
+            Want to Support Our Projects?
+        </h4>
+        <a href="/donate/"
+           class="btn me-2"
+           style="background:#1a6b3c; color:white; border-radius:20px; padding:10px 30px;">
+            Donate Now
+        </a>
+        <a href="/volunteer/"
+           class="btn btn-outline-success"
+           style="border-radius:20px; padding:10px 30px;">
+            Volunteer
+        </a>
+    </div>
+</section>
 
 {% endblock %}

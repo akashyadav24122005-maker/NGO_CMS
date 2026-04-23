@@ -1,48 +1,68 @@
 {% extends 'base.html' %}
-{% block title %}{{ post.title }} — HopeNGO Blog{% endblock %}
-
+{% block title %}Blog | NGO CMS{% endblock %}
 {% block content %}
 
-<div class="page-header bg-secondary text-white py-5">
-  <div class="container">
-    <nav aria-label="breadcrumb">
-      <ol class="breadcrumb mb-3">
-        <li class="breadcrumb-item"><a href="{% url 'home' %}" class="text-white opacity-75">Home</a></li>
-        <li class="breadcrumb-item"><a href="{% url 'blog' %}" class="text-white opacity-75">Blog</a></li>
-        <li class="breadcrumb-item active text-white">{{ post.title|truncatechars:40 }}</li>
-      </ol>
-    </nav>
-    <p class="mb-2 opacity-75 small">
-      <i class="bi bi-calendar3 me-2"></i>{{ post.published_at|date:"d M Y" }}
-      {% if post.author %}
-        <span class="ms-3"><i class="bi bi-person me-1"></i>{{ post.author.full_name }}</span>
-      {% endif %}
-    </p>
-    <h1 class="display-5 fw-bold">{{ post.title }}</h1>
-  </div>
-</div>
-
-<div class="container py-5">
-  <div class="row justify-content-center">
-    <div class="col-lg-8">
-
-      {% if post.cover_image %}
-        <img src="{{ post.cover_image.url }}" class="img-fluid rounded shadow-sm mb-4 w-100"
-             style="max-height:400px;object-fit:cover" alt="{{ post.title }}"/>
-      {% endif %}
-
-      <div class="blog-content lh-lg text-muted">
-        {{ post.content|linebreaks }}
-      </div>
-
-      
-      <div class="mt-5 pt-3 border-top">
-        <a href="{% url 'blog' %}" class="btn btn-outline-secondary px-4">
-          ← Back to Blog
-        </a>
-      </div>
-
+<!-- Hero -->
+<section style="background:linear-gradient(135deg,#1a6b3c,#2e7d52);
+                color:white; padding:60px 0; text-align:center;">
+    <div class="container">
+        <h1 class="fw-bold">Latest News & Updates</h1>
+        <p style="opacity:0.9;">Stay informed about our work and impact</p>
     </div>
-  </div>
-</div>
+</section>
+
+<!-- Blog List -->
+<section class="py-5">
+    <div class="container">
+        <div class="row g-4">
+            {% for blog in blogs %}
+            <div class="col-md-4">
+                <div class="card h-100 border-0 shadow-sm"
+                     style="border-radius:12px; overflow:hidden;
+                            transition:transform 0.3s;"
+                     onmouseover="this.style.transform='translateY(-6px)'"
+                     onmouseout="this.style.transform='translateY(0)'">
+                    {% if blog.image %}
+                    <img src="{{ blog.image.url }}"
+                         class="card-img-top"
+                         height="200"
+                         style="object-fit:cover;">
+                    {% else %}
+                    <div style="height:200px; background:#e8f5e9;
+                                display:flex; align-items:center;
+                                justify-content:center;">
+                        <i class="fas fa-newspaper"
+                           style="font-size:3rem; color:#1a6b3c; opacity:0.4;"></i>
+                    </div>
+                    {% endif %}
+                    <div class="card-body p-4">
+                        <p class="text-muted small mb-2">
+                            <i class="fas fa-calendar-alt me-1"></i>
+                            {{ blog.created_at|date:"d M Y" }}
+                        </p>
+                        <h5 class="fw-bold mb-2">{{ blog.title }}</h5>
+                        <p class="text-muted small">
+                            {{ blog.content|truncatechars:100 }}
+                        </p>
+                    </div>
+                    <div class="card-footer bg-white border-0 p-4 pt-0">
+                        <a href="{% url 'blog_detail' blog.pk %}"
+                           class="btn btn-sm"
+                           style="background:#1a6b3c; color:white;
+                                  border-radius:20px; padding:6px 20px;">
+                            Read More
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% empty %}
+            <div class="col-12 text-center py-5">
+                <i class="fas fa-newspaper fa-3x text-muted mb-3 d-block"></i>
+                <p class="text-muted">No blog posts published yet.</p>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+
 {% endblock %}

@@ -575,3 +575,29 @@ def edit_team_member(request, pk):
     return render(request, 'dashboard/about_edit_form.html', {
         'form': form, 'title': 'Edit Team Member'
     })
+
+
+# ── BLOG PUBLIC PAGES ─────────────────────────────────
+
+def blog_list(request):
+    blogs = BlogPost.objects.filter(status=True).order_by('-created_at')
+    return render(request, 'blog.html', {'blogs': blogs})
+
+def blog_detail(request, pk):
+    blog = get_object_or_404(BlogPost, pk=pk, status=True)
+    recent = BlogPost.objects.filter(status=True).exclude(pk=pk)[:3]
+    return render(request, 'blog_detail.html', {'blog': blog, 'recent': recent})
+
+
+# ── PROJECTS PUBLIC PAGE ──────────────────────────────
+
+def projects_list(request):
+    projects = Project.objects.filter(is_active=True)
+    return render(request, 'projects.html', {'projects': projects})
+
+def project_detail(request, pk):
+    project = get_object_or_404(Project, pk=pk)
+    related = Project.objects.filter(is_active=True).exclude(pk=pk)[:3]
+    return render(request, 'project_detail.html', {
+        'project': project, 'related': related
+    })
