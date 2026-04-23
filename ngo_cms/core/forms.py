@@ -120,3 +120,59 @@ class ContactMessageForm(forms.ModelForm):
     class Meta:
         model = ContactMessage
         fields = '__all__'
+
+from .models import OurStory, CoreValue, Program, TeamMember
+
+class OurStoryForm(forms.ModelForm):
+    class Meta:
+        model = OurStory
+        fields = ['content']
+        widgets = {
+            'content': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 4,
+                'placeholder': 'Add a new story...'
+            }),
+        }
+
+class CoreValueForm(forms.ModelForm):
+    class Meta:
+        model = CoreValue
+        fields = ['value']
+        widgets = {
+            'value': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Add a new core value...'
+            }),
+        }
+
+class ProgramForm(forms.ModelForm):
+    class Meta:
+        model = Program
+        fields = ['name', 'description']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Add a new program...'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 2
+            }),
+        }
+
+class TeamMemberForm(forms.ModelForm):
+    class Meta:
+        model = TeamMember
+        fields = ['name', 'role', 'image']
+        widgets = {
+            'name': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter name'
+            }),
+            'role': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter role'
+            }),
+            'image': forms.FileInput(attrs={'class': 'form-control'}),
+        }

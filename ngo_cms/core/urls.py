@@ -103,4 +103,15 @@ urlpatterns = [
     path('dashboard/messages/', views.contact_list, name='contact_list'),
     path('dashboard/volunteers/', views.volunteer_list, name='volunteer_list'),
     path('dashboard/donations/', views.donation_list, name='donation_list'),
+
+    path('about/', views.about, name='about'),
+    path('dashboard/about/', views.manage_about, name='manage_about'),
+    path('dashboard/about/core-value/delete/<int:pk>/', views.delete_core_value, name='delete_core_value'),
+    path('dashboard/about/program/delete/<int:pk>/', views.delete_program, name='delete_program'),
+    path('dashboard/about/team/delete/<int:pk>/', views.delete_team_member, name='delete_team_member'),
+
+    path('dashboard/about/story/edit/<int:pk>/', views.edit_story, name='edit_story'),
+    path('dashboard/about/core-value/edit/<int:pk>/', views.edit_core_value, name='edit_core_value'),
+    path('dashboard/about/program/edit/<int:pk>/', views.edit_program, name='edit_program'),
+    path('dashboard/about/team/edit/<int:pk>/', views.edit_team_member, name='edit_team_member'),
 ]

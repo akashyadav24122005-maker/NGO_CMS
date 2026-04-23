@@ -5,6 +5,8 @@ from django.contrib.auth.models import User
 from django.contrib.auth.decorators import login_required
 from django.contrib.admin.views.decorators import staff_member_required
 from django.conf import settings
+from django.shortcuts import render
+from .models import OurStory, CoreValue, Program, TeamMember
 
 import razorpay
 
@@ -426,3 +428,150 @@ def volunteer_list(request):
 def donation_list(request):
     data = Donation.objects.all().order_by('-created_at')
     return render(request, 'dashboard/donation_list.html', {'data': data})
+
+
+
+
+from .models import OurStory, CoreValue, Program, TeamMember
+from .forms import OurStoryForm, CoreValueForm, ProgramForm, TeamMemberForm
+
+# ── PUBLIC ABOUT PAGE ─────────────────────────────────
+def about(request):
+    story = OurStory.objects.first()
+    core_values = CoreValue.objects.all()
+    programs = Program.objects.all()
+    team = TeamMember.objects.all()
+    vision_mission = VisionMission.objects.first()
+    return render(request, 'about.html', {
+        'story': story,
+        'core_values': core_values,
+        'programs': programs,
+        'team': team,
+        'vision_mission': vision_mission,
+    })
+
+
+# ── ABOUT US DASHBOARD ────────────────────────────────
+@login_required
+def manage_about(request):
+    story = OurStory.objects.first()
+    story_form = OurStoryForm(instance=story)
+    cv_form = CoreValueForm()
+    prog_form = ProgramForm()
+    team_form = TeamMemberForm()
+
+    if request.method == 'POST':
+        section = request.POST.get('section')
+
+        if section == 'story':
+            story_form = OurStoryForm(request.POST, instance=story)
+            if story_form.is_valid():
+                story_form.save()
+                messages.success(request, 'Story updated!')
+                return redirect('manage_about')
+
+        elif section == 'core_value':
+            cv_form = CoreValueForm(request.POST)
+            if cv_form.is_valid():
+                cv_form.save()
+                messages.success(request, 'Core value added!')
+                return redirect('manage_about')
+
+        elif section == 'program':
+            prog_form = ProgramForm(request.POST)
+            if prog_form.is_valid():
+                prog_form.save()
+                messages.success(request, 'Program added!')
+                return redirect('manage_about')
+
+        elif section == 'team':
+            team_form = TeamMemberForm(request.POST, request.FILES)
+            if team_form.is_valid():
+                team_form.save()
+                messages.success(request, 'Team member added!')
+                return redirect('manage_about')
+
+    return render(request, 'dashboard/about_manage.html', {
+        'story': story,
+        'story_form': story_form,
+        'core_values': CoreValue.objects.all(),
+        'cv_form': cv_form,
+        'programs': Program.objects.all(),
+        'prog_form': prog_form,
+        'team': TeamMember.objects.all(),
+        'team_form': team_form,
+    })
+
+
+# ── DELETE VIEWS ──────────────────────────────────────
+@login_required
+def delete_core_value(request, pk):
+    get_object_or_404(CoreValue, pk=pk).delete()
+    messages.success(request, 'Deleted!')
+    return redirect('manage_about')
+
+@login_required
+def delete_program(request, pk):
+    get_object_or_404(Program, pk=pk).delete()
+    messages.success(request, 'Deleted!')
+    return redirect('manage_about')
+
+@login_required
+def delete_team_member(request, pk):
+    get_object_or_404(TeamMember, pk=pk).delete()
+    messages.success(request, 'Deleted!')
+    return redirect('manage_about')
+
+
+# ── EDIT VIEWS FOR ABOUT US ───────────────────────────
+
+@login_required
+def edit_story(request, pk):
+    story = get_object_or_404(OurStory, pk=pk)
+    form = OurStoryForm(request.POST or None, instance=story)
+    if form.is_valid():
+        form.save()
+        messages.success(request, 'Story updated!')
+        return redirect('manage_about')
+    return render(request, 'dashboard/about_edit_form.html', {
+        'form': form, 'title': 'Edit Our Story'
+    })
+
+
+@login_required
+def edit_core_value(request, pk):
+    obj = get_object_or_404(CoreValue, pk=pk)
+    form = CoreValueForm(request.POST or None, instance=obj)
+    if form.is_valid():
+        form.save()
+        messages.success(request, 'Core value updated!')
+        return redirect('manage_about')
+    return render(request, 'dashboard/about_edit_form.html', {
+        'form': form, 'title': 'Edit Core Value'
+    })
+
+
+@login_required
+def edit_program(request, pk):
+    obj = get_object_or_404(Program, pk=pk)
+    form = ProgramForm(request.POST or None, instance=obj)
+    if form.is_valid():
+        form.save()
+        messages.success(request, 'Program updated!')
+        return redirect('manage_about')
+    return render(request, 'dashboard/about_edit_form.html', {
+        'form': form, 'title': 'Edit Program'
+    })
+
+
+@login_required
+def edit_team_member(request, pk):
+    obj = get_object_or_404(TeamMember, pk=pk)
+    form = TeamMemberForm(request.POST or None, request.FILES or None, instance=obj)
+    if form.is_valid():
+        form.save()
+        messages.success(request, 'Team member updated!')
+        return redirect('manage_about')
+    return render(request, 'dashboard/about_edit_form.html', {
+        'form': form, 'title': 'Edit Team Member'
+    })

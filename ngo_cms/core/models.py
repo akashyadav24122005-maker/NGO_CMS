@@ -139,3 +139,30 @@ class Project(models.Model):
 
     def __str__(self):
         return self.title
+
+class OurStory(models.Model):
+    content = models.TextField()
+
+class CoreValue(models.Model):
+    value = models.CharField(max_length=200)
+
+class Program(models.Model):
+    name = models.CharField(max_length=200)
+    description = models.TextField(blank=True)
+
+class TeamMember(models.Model):
+    name = models.CharField(max_length=100)
+    role = models.CharField(max_length=100)
+    image = models.ImageField(upload_to='team/')
+
+
+# ── OUR IMPACT ─────────────────────────────────────────
+class OurImpact(models.Model):
+    achievement = models.CharField(max_length=255)
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        db_table = 'our_impact'
+
+    def __str__(self):
+        return self.achievement

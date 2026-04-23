@@ -1,0 +1,193 @@
+{% extends 'base_dashboard.html' %}
+{% block page_title %}Manage About Us{% endblock %}
+{% block content %}
+
+<!-- OUR STORY -->
+<div class="card mb-4">
+    <div class="card-header"><i class="fas fa-book-open me-2"></i>Our Story</div>
+    <div class="card-body">
+        <table class="table table-bordered mb-3">
+            <thead>
+                <tr><th>Content</th><th>Edit</th><th>Delete</th></tr>
+            </thead>
+            <tbody>
+            {% if story %}
+            <tr>
+                <td>{{ story.content|truncatechars:80 }}</td>
+                <td>
+                    <a href="{% url 'edit_story' story.pk %}" class="btn btn-sm btn-warning">
+                        Edit
+                    </a>
+                </td>
+                <td>—</td>
+            </tr>
+            {% else %}
+            <tr><td colspan="3" class="text-muted text-center">No story added yet.</td></tr>
+            {% endif %}
+            </tbody>
+        </table>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="section" value="story">
+            <div class="mb-2">
+                <label class="form-label fw-semibold small">Story:</label>
+                {{ story_form.content }}
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Save</button>
+        </form>
+    </div>
+</div>
+
+
+<!-- CORE VALUES -->
+<div class="card mb-4">
+    <div class="card-header"><i class="fas fa-heart me-2"></i>Core Values</div>
+    <div class="card-body">
+        <table class="table table-bordered mb-3">
+            <thead>
+                <tr><th>Value</th><th>Edit</th><th>Delete</th></tr>
+            </thead>
+            <tbody>
+            {% for cv in core_values %}
+            <tr>
+                <td>{{ cv.value }}</td>
+                <td>
+                    <a href="{% url 'edit_core_value' cv.pk %}" class="btn btn-sm btn-warning">
+                        Edit
+                    </a>
+                </td>
+                <td>
+                    <a href="{% url 'delete_core_value' cv.pk %}"
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('Delete this value?')">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3" class="text-muted text-center">No values yet.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="section" value="core_value">
+            <div class="mb-2">
+                <label class="form-label fw-semibold small">New Core Value:</label>
+                {{ cv_form.value }}
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Save</button>
+        </form>
+    </div>
+</div>
+
+
+<!-- PROGRAMS -->
+<div class="card mb-4">
+    <div class="card-header"><i class="fas fa-project-diagram me-2"></i>Programs</div>
+    <div class="card-body">
+        <table class="table table-bordered mb-3">
+            <thead>
+                <tr><th>Program</th><th>Edit</th><th>Delete</th></tr>
+            </thead>
+            <tbody>
+            {% for prog in programs %}
+            <tr>
+                <td>{{ prog.name }}</td>
+                <td>
+                    <a href="{% url 'edit_program' prog.pk %}" class="btn btn-sm btn-warning">
+                        Edit
+                    </a>
+                </td>
+                <td>
+                    <a href="{% url 'delete_program' prog.pk %}"
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('Delete this program?')">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="3" class="text-muted text-center">No programs yet.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="section" value="program">
+            <div class="mb-2">
+                <label class="form-label fw-semibold small">New Program:</label>
+                {{ prog_form.name }}
+            </div>
+            <div class="mb-2">
+                <label class="form-label fw-semibold small">Description (optional):</label>
+                {{ prog_form.description }}
+            </div>
+            <button type="submit" class="btn btn-primary w-100">Save</button>
+        </form>
+    </div>
+</div>
+
+
+<!-- TEAM MEMBERS -->
+<div class="card mb-4">
+    <div class="card-header"><i class="fas fa-users me-2"></i>Team Members</div>
+    <div class="card-body">
+        <table class="table table-bordered mb-3">
+            <thead>
+                <tr><th>Name</th><th>Role</th><th>Image</th><th>Edit</th><th>Delete</th></tr>
+            </thead>
+            <tbody>
+            {% for member in team %}
+            <tr>
+                <td>{{ member.name }}</td>
+                <td>{{ member.role }}</td>
+                <td>
+                    {% if member.image %}
+                    <img src="{{ member.image.url }}" width="45" height="45"
+                         style="border-radius:50%; object-fit:cover;">
+                    {% else %}
+                    <span class="text-muted small">No image</span>
+                    {% endif %}
+                </td>
+                <td>
+                    <a href="{% url 'edit_team_member' member.pk %}" class="btn btn-sm btn-warning">
+                        Edit
+                    </a>
+                </td>
+                <td>
+                    <a href="{% url 'delete_team_member' member.pk %}"
+                       class="btn btn-sm btn-danger"
+                       onclick="return confirm('Delete this member?')">
+                        Delete
+                    </a>
+                </td>
+            </tr>
+            {% empty %}
+            <tr><td colspan="5" class="text-muted text-center">No team members yet.</td></tr>
+            {% endfor %}
+            </tbody>
+        </table>
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="section" value="team">
+            <div class="row g-2">
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold small">Name:</label>
+                    {{ team_form.name }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold small">Role:</label>
+                    {{ team_form.role }}
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-semibold small">Upload Image:</label>
+                    {{ team_form.image }}
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary w-100 mt-3">Save</button>
+        </form>
+    </div>
+</div>
+
+{% endblock %}
