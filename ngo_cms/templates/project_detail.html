@@ -1,102 +1,123 @@
 {% extends 'base.html' %}
 {% block title %}{{ project.title }} | NGO CMS{% endblock %}
+
 {% block content %}
 
 <section class="py-5">
-    <div class="container">
-        <div class="row g-4">
+<div class="container">
+<div class="row g-4">
 
-            <!-- Main Content -->
-            <div class="col-md-8">
-                <div class="card border-0 shadow-sm"
-                     style="border-radius:12px;">
-                    {% if project.image %}
-                    <img src="{{ project.image.url }}"
-                         class="card-img-top"
-                         style="border-radius:12px 12px 0 0;
-                                max-height:400px; object-fit:cover;">
-                    {% endif %}
-                    <div class="card-body p-4">
-                        <h2 class="fw-bold mb-2">{{ project.title }}</h2>
-                        {% if project.location %}
-                        <p class="text-muted mb-3">
-                            <i class="fas fa-map-marker-alt me-1"
-                               style="color:#1a6b3c;"></i>
-                            {{ project.location }}
-                        </p>
-                        {% endif %}
-                        <span class="badge mb-3"
-                              style="background:#d4edda; color:#155724;
-                                     padding:6px 14px; border-radius:20px;">
-                            {% if project.is_active %}Active{% else %}Completed{% endif %}
-                        </span>
-                        <hr>
-                        <div style="line-height:1.9; font-size:1.05rem;">
-                            {{ project.description|linebreaks }}
-                        </div>
-                        <hr>
-                        <a href="{% url 'projects_list' %}"
-                           class="btn"
-                           style="background:#1a6b3c; color:white; border-radius:20px;">
-                            ← Back to Projects
-                        </a>
-                    </div>
-                </div>
-            </div>
+<!-- Main Content -->
+<div class="col-md-8">
 
-            <!-- Sidebar -->
-            <div class="col-md-4">
-                <div class="card border-0 shadow-sm p-3"
-                     style="border-radius:12px;">
-                    <h6 class="fw-bold mb-3"
-                        style="color:#1a6b3c; border-bottom:2px solid #e8a020;
-                               padding-bottom:8px;">
-                        Other Projects
-                    </h6>
-                    {% for p in related %}
-                    <div class="mb-3 d-flex gap-3 align-items-start">
-                        {% if p.image %}
-                        <img src="{{ p.image.url }}"
-                             width="60" height="60"
-                             style="object-fit:cover; border-radius:8px; flex-shrink:0;">
-                        {% endif %}
-                        <div>
-                            <a href="{% url 'project_detail' p.pk %}"
-                               class="text-decoration-none fw-semibold"
-                               style="color:#1a6b3c; font-size:0.88rem;">
-                                {{ p.title|truncatechars:45 }}
-                            </a>
-                            {% if p.location %}
-                            <p class="text-muted mb-0"
-                               style="font-size:0.78rem;">
-                                {{ p.location }}
-                            </p>
-                            {% endif %}
-                        </div>
-                    </div>
-                    {% empty %}
-                    <p class="text-muted small">No other projects.</p>
-                    {% endfor %}
-                </div>
+<div class="card border-0 shadow-sm">
 
-                <!-- CTA -->
-                <div class="card border-0 mt-3 p-4 text-center text-white"
-                     style="background:linear-gradient(135deg,#1a6b3c,#2e7d52);
-                            border-radius:12px;">
-                    <h6 class="fw-bold">Support This Project</h6>
-                    <p style="font-size:0.85rem; opacity:0.9;">
-                        Your donation makes a difference
-                    </p>
-                    <a href="/donate/"
-                       class="btn btn-light btn-sm fw-bold"
-                       style="border-radius:20px;">
-                        Donate Now
-                    </a>
-                </div>
-            </div>
+{% if project.image %}
+<img src="{{ project.image.url }}"
+     class="card-img-top"
+     style="max-height:400px; object-fit:cover;">
+{% endif %}
 
-        </div>
-    </div>
+<div class="card-body p-4">
+
+<span class="badge bg-success mb-2">
+    {{ project.status }}
+</span>
+
+<h2 class="fw-bold">{{ project.title }}</h2>
+
+<div class="mb-3 text-muted small">
+    {% if project.location %}
+        📍 {{ project.location }}
+    {% endif %}
+
+    {% if project.start_date %}
+        | 📅 {{ project.start_date }}
+    {% endif %}
+
+    {% if project.end_date %}
+        - {{ project.end_date }}
+    {% endif %}
+</div>
+
+<hr>
+
+<div style="line-height:1.8;">
+    {{ project.description|linebreaks }}
+</div>
+
+{% if images %}
+<hr>
+<h5 class="fw-bold text-success mb-3">Project Gallery</h5>
+
+<div class="row g-2">
+{% for img in images %}
+<div class="col-md-4">
+<img src="{{ img.image.url }}"
+     class="img-fluid rounded"
+     style="height:150px; width:100%; object-fit:cover;">
+</div>
+{% endfor %}
+</div>
+{% endif %}
+
+<hr>
+
+<a href="{% url 'projects_list' %}" class="btn btn-success">
+← Back to Projects
+</a>
+
+</div>
+</div>
+</div>
+
+<!-- Sidebar -->
+<div class="col-md-4">
+
+<div class="card bg-success text-white border-0 mb-3">
+<div class="card-body text-center p-4">
+
+<h5 class="fw-bold">Support This Project</h5>
+<p>Your donation makes a difference.</p>
+
+<a href="/donate/" class="btn btn-light btn-sm">
+Donate Now
+</a>
+
+</div>
+</div>
+
+<div class="card border-0 shadow-sm">
+<div class="card-body">
+
+<h5 class="fw-bold text-success mb-3">
+Other Projects
+</h5>
+
+{% for p in related %}
+<div class="mb-3 border-bottom pb-2">
+
+<a href="{% url 'project_detail' p.pk %}"
+   class="fw-semibold text-decoration-none text-success">
+   {{ p.title }}
+</a>
+
+<p class="small text-muted mb-0">
+{{ p.status }}
+</p>
+
+</div>
+{% empty %}
+<p class="text-muted">No other projects.</p>
+{% endfor %}
+
+</div>
+</div>
+
+</div>
+
+</div>
+</div>
 </section>
 
 {% endblock %}

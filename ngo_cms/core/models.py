@@ -124,22 +124,6 @@ class BlogPost(models.Model):
     def __str__(self):
         return self.title
 
-
-# -------------------------
-# Projects  ✅ ONE definition only
-# -------------------------
-class Project(models.Model):
-    title = models.CharField(max_length=200)
-    description = models.TextField(blank=True)
-    image = models.ImageField(upload_to='projects/', blank=True, null=True)
-    location = models.CharField(max_length=200, blank=True)
-    is_active = models.BooleanField(default=True)
-    created_at = models.DateTimeField(default=timezone.now)  # ✅ fixed
-
-    def __str__(self):
-        return self.title  # ✅ fixed (was self.titles)
-
-
 # -------------------------
 # Our Story
 # -------------------------
@@ -200,3 +184,48 @@ class OurImpact(models.Model):
 
     def __str__(self):
         return self.achievement
+
+
+from django.utils import timezone
+
+class Project(models.Model):
+    STATUS_CHOICES = [
+        ('Ongoing', 'Ongoing'),
+        ('Completed', 'Completed'),
+        ('Upcoming', 'Upcoming'),
+    ]
+
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Ongoing')
+    start_date = models.DateField(blank=True, null=True)
+    end_date = models.DateField(blank=True, null=True)
+    location = models.CharField(max_length=255, blank=True)
+    image = models.ImageField(upload_to='projects/', blank=True, null=True)
+    is_active = models.BooleanField(default=True)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'projects'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.title
+
+
+# Add this NEW model below Project
+class ProjectImage(models.Model):
+    project = models.ForeignKey(
+        Project,
+        on_delete=models.CASCADE,
+        related_name='images'
+    )
+    image = models.ImageField(upload_to='project_images/')
+    uploaded_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        db_table = 'project_images'
+
+    def __str__(self):
+        return f"Image for {self.project.title}"

@@ -103,18 +103,10 @@ class InitiativeForm(forms.ModelForm):
         model = Initiative
         fields = '__all__'
 
-
-class ProjectForm(forms.ModelForm):
-    class Meta:
-        model = Project
-        fields = '__all__'
-
-
 class BlogPostForm(forms.ModelForm):
     class Meta:
         model = BlogPost
         fields = '__all__'
-
 
 class ContactMessageForm(forms.ModelForm):
     class Meta:
@@ -175,4 +167,43 @@ class TeamMemberForm(forms.ModelForm):
                 'placeholder': 'Enter role'
             }),
             'image': forms.FileInput(attrs={'class': 'form-control'}),
+        }
+
+
+class ProjectForm(forms.ModelForm):
+    class Meta:
+        model = Project
+        fields = ['title', 'description', 'status', 'start_date',
+                  'end_date', 'location', 'image', 'is_active']
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter project title'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 4,
+                'placeholder': 'Enter project description'
+            }),
+            'status': forms.Select(attrs={
+                'class': 'form-select'
+            }),
+            'start_date': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date'
+            }),
+            'end_date': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date'
+            }),
+            'location': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter project location (optional)'
+            }),
+            'image': forms.FileInput(attrs={
+                'class': 'form-control'
+            }),
+            'is_active': forms.CheckboxInput(attrs={
+                'class': 'form-check-input'
+            }),
         }

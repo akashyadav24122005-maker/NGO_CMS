@@ -589,15 +589,87 @@ def blog_detail(request, pk):
     return render(request, 'blog_detail.html', {'blog': blog, 'recent': recent})
 
 
-# ── PROJECTS PUBLIC PAGE ──────────────────────────────
+
+from .models import Project, ProjectImage
 
 def projects_list(request):
-    projects = Project.objects.filter(is_active=True)
-    return render(request, 'projects.html', {'projects': projects})
+    status_filter = request.GET.get('status', '')
+    if status_filter in ['Ongoing', 'Completed', 'Upcoming']:
+        projects = Project.objects.filter(
+            is_active=True, status=status_filter
+        )
+    else:
+        projects = Project.objects.filter(is_active=True)
+
+    # Impact stats
+    total_projects = Project.objects.filter(is_active=True).count()
+    ongoing = Project.objects.filter(status='Ongoing').count()
+    completed = Project.objects.filter(status='Completed').count()
+
+    return render(request, 'projects.html', {
+        'projects': projects,
+        'status_filter': status_filter,
+        'total_projects': total_projects,
+        'ongoing': ongoing,
+        'completed': completed,
+    })
+
 
 def project_detail(request, pk):
-    project = get_object_or_404(Project, pk=pk)
-    related = Project.objects.filter(is_active=True).exclude(pk=pk)[:3]
+    project = get_object_or_404(Project, pk=pk, is_active=True)
+    images = project.images.all()
+    related = Project.objects.filter(
+        is_active=True
+    ).exclude(pk=pk)[:3]
     return render(request, 'project_detail.html', {
-        'project': project, 'related': related
+        'project': project,
+        'images': images,
+        'related': related,
     })
+
+
+# ── ADMIN PROJECT MANAGEMENT ──────────────────────────
+@login_required
+def manage_projects(request):
+    projects = Project.objects.all().order_by('-created_at')
+    form = ProjectForm()
+
+    if request.method == 'POST':
+        form = ProjectForm(request.POST, request.FILES)
+        if form.is_valid():
+            project = form.save()
+            # Handle multiple image uploads
+            for img in request.FILES.getlist('extra_images'):
+                ProjectImage.objects.create(project=project, image=img)
+            messages.success(request, 'Project saved successfully!')
+            return redirect('manage_projects')
+
+    return render(request, 'dashboard/project_manage.html', {
+        'projects': projects,
+        'form': form,
+    })
+
+
+@login_required
+def edit_project(request, pk):
+    project = get_object_or_404(Project, pk=pk)
+    form = ProjectForm(instance=project)
+
+    if request.method == 'POST':
+        form = ProjectForm(request.POST, request.FILES, instance=project)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Project updated!')
+            return redirect('manage_projects')
+
+    return render(request, 'dashboard/project_edit.html', {
+        'form': form,
+        'project': project,
+    })
+
+
+@login_required
+def delete_project(request, pk):
+    get_object_or_404(Project, pk=pk).delete()
+    messages.success(request, 'Project deleted!')
+    return redirect('manage_projects')

@@ -1,89 +1,198 @@
 {% extends 'base.html' %}
-{% block title %}Projects | NGO CMS{% endblock %}
+{% block title %}Our Projects | NGO CMS{% endblock %}
 {% block content %}
 
 <!-- Hero -->
-<section style="background:linear-gradient(135deg,#1a6b3c,#2e7d52);
-                color:white; padding:60px 0; text-align:center;">
+<section style="background:linear-gradient(135deg,#1a6b3c,#2e7d52); color:white; padding:60px 0; text-align:center;">
     <div class="container">
         <h1 class="fw-bold">Our Projects</h1>
-        <p style="opacity:0.9;">
-            Discover the work we are doing to transform communities
+        <p class="mb-0" style="opacity:0.9;">
+            Making a difference through our initiatives
         </p>
     </div>
 </section>
 
-<!-- Projects Grid -->
+<!-- Status Filter -->
+<section class="py-4 bg-light border-bottom">
+    <div class="container">
+        <div class="d-flex flex-wrap justify-content-center gap-2">
+
+            <a href="{% url 'projects_list' %}"
+               class="btn fw-semibold px-4 py-2 {% if not status_filter %}btn-success{% else %}btn-outline-success{% endif %}"
+               style="border-radius:25px;">
+                All Projects
+            </a>
+
+            <a href="?status=Ongoing"
+               class="btn fw-semibold px-4 py-2 {% if status_filter == 'Ongoing' %}btn-success{% else %}btn-outline-success{% endif %}"
+               style="border-radius:25px;">
+                Ongoing
+            </a>
+
+            <a href="?status=Completed"
+               class="btn fw-semibold px-4 py-2 {% if status_filter == 'Completed' %}btn-success{% else %}btn-outline-success{% endif %}"
+               style="border-radius:25px;">
+                Completed
+            </a>
+
+            <a href="?status=Upcoming"
+               class="btn fw-semibold px-4 py-2 {% if status_filter == 'Upcoming' %}btn-success{% else %}btn-outline-success{% endif %}"
+               style="border-radius:25px;">
+                Upcoming
+            </a>
+
+        </div>
+    </div>
+</section>
+
+<!-- Projects -->
 <section class="py-5">
     <div class="container">
         <div class="row g-4">
+
             {% for project in projects %}
-            <div class="col-md-4">
+            <div class="col-md-6 col-lg-4">
+
                 <div class="card h-100 border-0 shadow-sm"
-                     style="border-radius:12px; overflow:hidden;
-                            transition:transform 0.3s;"
-                     onmouseover="this.style.transform='translateY(-6px)'"
-                     onmouseout="this.style.transform='translateY(0)'">
+                     style="border-radius:14px; overflow:hidden; transition:0.3s;"
+                     onmouseover="this.style.transform='translateY(-6px)';this.style.boxShadow='0 12px 25px rgba(0,0,0,0.12)'"
+                     onmouseout="this.style.transform='translateY(0)';this.style.boxShadow=''">
+
                     {% if project.image %}
-                    <img src="{{ project.image.url }}"
-                         class="card-img-top" height="210"
-                         style="object-fit:cover;">
+                        <img src="{{ project.image.url }}"
+                             class="card-img-top"
+                             height="220"
+                             style="object-fit:cover;">
                     {% else %}
-                    <div style="height:210px; background:#e8f5e9;
-                                display:flex; align-items:center;
-                                justify-content:center;">
-                        <i class="fas fa-project-diagram"
-                           style="font-size:3rem; color:#1a6b3c; opacity:0.4;"></i>
-                    </div>
+                        <div style="height:220px; background:#eef7ef; display:flex; align-items:center; justify-content:center;">
+                            <i class="fas fa-project-diagram"
+                               style="font-size:3rem; color:#1a6b3c; opacity:0.4;"></i>
+                        </div>
                     {% endif %}
+
                     <div class="card-body p-4">
-                        <h5 class="fw-bold mb-2">{{ project.title }}</h5>
+
+                        <!-- Status -->
+                        {% if project.status == 'Ongoing' %}
+                            <span class="badge rounded-pill mb-2 text-bg-success px-3 py-2">
+                                {{ project.status }}
+                            </span>
+                        {% elif project.status == 'Completed' %}
+                            <span class="badge rounded-pill mb-2 text-bg-primary px-3 py-2">
+                                {{ project.status }}
+                            </span>
+                        {% else %}
+                            <span class="badge rounded-pill mb-2 text-bg-warning px-3 py-2">
+                                {{ project.status }}
+                            </span>
+                        {% endif %}
+
+                        <h5 class="fw-bold">{{ project.title }}</h5>
+
                         {% if project.location %}
                         <p class="text-muted small mb-2">
-                            <i class="fas fa-map-marker-alt me-1"
-                               style="color:#1a6b3c;"></i>
+                            <i class="fas fa-map-marker-alt me-1 text-success"></i>
                             {{ project.location }}
                         </p>
                         {% endif %}
-                        <p class="text-muted small">
+
+                        <p class="text-muted mb-0">
                             {{ project.description|truncatechars:100 }}
                         </p>
                     </div>
-                    <div class="card-footer bg-white border-0 p-4 pt-0">
+
+                    <div class="card-footer bg-white border-0 px-4 pb-4 pt-0">
+
+                        {% if project.start_date %}
+                        <p class="small text-muted mb-3">
+                            <i class="fas fa-calendar-alt me-1"></i>
+                            {{ project.start_date|date:"d M Y" }}
+                            {% if project.end_date %}
+                                - {{ project.end_date|date:"d M Y" }}
+                            {% endif %}
+                        </p>
+                        {% endif %}
+
                         <a href="{% url 'project_detail' project.pk %}"
-                           class="btn btn-sm"
-                           style="background:#1a6b3c; color:white;
-                                  border-radius:20px; padding:6px 20px;">
-                            See Details
+                           class="btn btn-success btn-sm px-4 rounded-pill">
+                            Learn More
                         </a>
+
                     </div>
                 </div>
+
             </div>
+
             {% empty %}
             <div class="col-12 text-center py-5">
-                <i class="fas fa-project-diagram fa-3x text-muted mb-3 d-block"></i>
-                <p class="text-muted">No projects added yet.</p>
+                <i class="fas fa-folder-open fa-3x text-muted mb-3 d-block"></i>
+                <h5 class="text-muted">No projects found</h5>
+                <a href="{% url 'projects_list' %}" class="btn btn-outline-success mt-2">
+                    View All Projects
+                </a>
             </div>
             {% endfor %}
+
+        </div>
+    </div>
+</section>
+
+<!-- Impact -->
+<section style="background:#1a6b3c; color:white; padding:60px 0;">
+    <div class="container text-center">
+
+        <h2 class="fw-bold">Our Impact</h2>
+        <p class="mb-5" style="opacity:0.85;">
+            See how we are changing lives with your support
+        </p>
+
+        <div class="row g-4">
+
+            <div class="col-6 col-md-3">
+                <div class="p-4 rounded" style="background:rgba(255,255,255,0.08);">
+                    <h2 class="fw-bold text-warning">500+</h2>
+                    <p class="mb-0">People Helped</p>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="p-4 rounded" style="background:rgba(255,255,255,0.08);">
+                    <h2 class="fw-bold text-warning">300+</h2>
+                    <p class="mb-0">Volunteers</p>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="p-4 rounded" style="background:rgba(255,255,255,0.08);">
+                    <h2 class="fw-bold text-warning">{{ total_projects }}</h2>
+                    <p class="mb-0">Projects</p>
+                </div>
+            </div>
+
+            <div class="col-6 col-md-3">
+                <div class="p-4 rounded" style="background:rgba(255,255,255,0.08);">
+                    <h2 class="fw-bold text-warning">{{ completed }}</h2>
+                    <p class="mb-0">Completed</p>
+                </div>
+            </div>
+
         </div>
     </div>
 </section>
 
 <!-- CTA -->
-<section style="background:#f4f6f9; padding:50px 0; text-align:center;">
+<section class="py-5 bg-light text-center">
     <div class="container">
-        <h4 class="fw-bold mb-3" style="color:#1a6b3c;">
+        <h3 class="fw-bold text-success mb-3">
             Want to Support Our Projects?
-        </h4>
-        <a href="/donate/"
-           class="btn me-2"
-           style="background:#1a6b3c; color:white; border-radius:20px; padding:10px 30px;">
+        </h3>
+
+        <a href="/donate/" class="btn btn-success px-4 py-2 rounded-pill me-2">
             Donate Now
         </a>
-        <a href="/volunteer/"
-           class="btn btn-outline-success"
-           style="border-radius:20px; padding:10px 30px;">
-            Volunteer
+
+        <a href="/volunteer/" class="btn btn-outline-success px-4 py-2 rounded-pill">
+            Volunteer Today
         </a>
     </div>
 </section>

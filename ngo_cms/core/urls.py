@@ -121,4 +121,13 @@ urlpatterns = [
 
     path('projects/', views.projects_list, name='projects_list'),
     path('projects/<int:pk>/', views.project_detail, name='project_detail'),
+
+
+    path('projects/', views.projects_list, name='projects_list'),
+    path('projects/<int:pk>/', views.project_detail, name='project_detail'),
+    path('dashboard/projects/', views.manage_projects, name='manage_projects'),
+    path('dashboard/projects/edit/<int:pk>/', views.edit_project, name='edit_project'),
+    path('dashboard/projects/delete/<int:pk>/', views.delete_project, name='delete_project'),
+
+
 ]

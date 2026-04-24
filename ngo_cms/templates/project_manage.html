@@ -1,0 +1,127 @@
+{% extends 'base_dashboard.html' %}
+{% block page_title %}Manage Projects{% endblock %}
+
+{% block content %}
+
+<div class="row g-4">
+
+<!-- Add Project Form -->
+<div class="col-md-5">
+
+<div class="card shadow-sm border-0">
+<div class="card-header bg-success text-white">
+<i class="fas fa-plus me-2"></i>
+Admin - Manage Projects
+</div>
+
+<div class="card-body">
+
+<form method="post" enctype="multipart/form-data">
+{% csrf_token %}
+
+<div class="mb-3">
+<label class="form-label fw-bold small">Project Title</label>
+{{ form.title }}
+</div>
+
+<div class="mb-3">
+<label class="form-label fw-bold small">Description</label>
+{{ form.description }}
+</div>
+
+<div class="mb-3">
+<label class="form-label fw-bold small">Status</label>
+{{ form.status }}
+</div>
+
+<div class="mb-3">
+<label class="form-label fw-bold small">Start Date</label>
+{{ form.start_date }}
+</div>
+
+<div class="mb-3">
+<label class="form-label fw-bold small">End Date</label>
+{{ form.end_date }}
+</div>
+
+<div class="mb-3">
+<label class="form-label fw-bold small">Location</label>
+{{ form.location }}
+</div>
+
+<div class="mb-3">
+<label class="form-label fw-bold small">Upload Image</label>
+{{ form.image }}
+</div>
+
+<div class="mb-3 form-check">
+{{ form.is_active }}
+<label class="form-check-label">Active</label>
+</div>
+
+<button type="submit" class="btn btn-success w-100">
+<i class="fas fa-save me-2"></i>
+Save Project
+</button>
+
+</form>
+
+</div>
+</div>
+</div>
+
+<!-- Existing Projects -->
+<div class="col-md-7">
+
+<div class="card shadow-sm border-0">
+<div class="card-header bg-dark text-white">
+<i class="fas fa-list me-2"></i>
+Existing Projects
+</div>
+
+<div class="card-body p-0">
+
+{% for project in projects %}
+<div class="p-3 border-bottom d-flex justify-content-between align-items-start">
+
+<div>
+<h6 class="fw-bold mb-1">{{ project.title }}</h6>
+
+<p class="small text-muted mb-1">
+{{ project.description|truncatechars:60 }}
+</p>
+
+<span class="badge bg-success">
+{{ project.status }}
+</span>
+</div>
+
+<div class="d-flex gap-2">
+<a href="{% url 'edit_project' project.pk %}"
+   class="btn btn-warning btn-sm">
+Edit
+</a>
+
+<a href="{% url 'delete_project' project.pk %}"
+   class="btn btn-danger btn-sm"
+   onclick="return confirm('Delete this project?')">
+Delete
+</a>
+</div>
+
+</div>
+
+{% empty %}
+<div class="p-4 text-center text-muted">
+No projects added yet.
+</div>
+{% endfor %}
+
+</div>
+</div>
+
+</div>
+
+</div>
+
+{% endblock %}
