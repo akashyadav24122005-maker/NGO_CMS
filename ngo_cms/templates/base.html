@@ -91,14 +91,16 @@ data-bs-target="#navbarNav"
 <a class="nav-link" href="{% url 'about' %}">About</a>
 </li>
 
-<!-- ✅ FIXED: was 'projects' → now 'projects_list' -->
 <li class="nav-item">
 <a class="nav-link" href="{% url 'projects_list' %}">Projects</a>
 </li>
 
-<!-- ✅ FIXED: was 'blog' → now 'blog_list' -->
 <li class="nav-item">
 <a class="nav-link" href="{% url 'blog_list' %}">Blog</a>
+</li>
+
+<li class="nav-item">
+<a class="nav-link" href="{% url 'media' %}">Media</a>
 </li>
 
 <li class="nav-item">
@@ -123,7 +125,7 @@ data-bs-target="#navbarNav"
 </li>
 {% else %}
 <li class="nav-item">
-<a class="nav-link" href="{% url 'logout' %}">Login</a>
+<a class="nav-link" href="{% url 'login' %}">Login</a>
 </li>
 {% endif %}
 
@@ -132,7 +134,6 @@ data-bs-target="#navbarNav"
 
 </div>
 </nav>
-
 
 <!-- Messages -->
 <div class="container mt-3">
@@ -149,13 +150,11 @@ data-bs-target="#navbarNav"
 {% endif %}
 </div>
 
-
 <!-- Main Content -->
 <div class="container mt-4 main-content">
     {% block content %}
     {% endblock %}
 </div>
-
 
 <!-- Footer -->
 <footer class="text-center p-4 footer-bar mt-5">
@@ -169,7 +168,6 @@ data-bs-target="#navbarNav"
 </p>
 </div>
 </footer>
-
 
 <!-- Bootstrap JS -->
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>

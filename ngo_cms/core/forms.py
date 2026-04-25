@@ -9,6 +9,14 @@ from .models import (
     Initiative,
     Project,
     BlogPost,
+
+)
+
+from .models import (
+    Banner, VisionMission, Statistic, Initiative,
+    OurStory, CoreValue, Program, TeamMember,
+    Project, ProjectImage, BlogPost, OurImpact,
+    PressRelease, MediaCoverage, GalleryImage, Video 
 )
 
 class ContactForm(forms.ModelForm):
@@ -205,5 +213,71 @@ class ProjectForm(forms.ModelForm):
             }),
             'is_active': forms.CheckboxInput(attrs={
                 'class': 'form-check-input'
+            }),
+        }
+
+
+class PressReleaseForm(forms.ModelForm):
+    class Meta:
+        model = PressRelease
+        fields = ['title', 'description', 'release_date']
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter press release title'
+            }),
+            'description': forms.Textarea(attrs={
+                'class': 'form-control',
+                'rows': 3,
+                'placeholder': 'Enter a brief description'
+            }),
+            'release_date': forms.DateInput(attrs={
+                'class': 'form-control',
+                'type': 'date'
+            }),
+        }
+
+
+class MediaCoverageForm(forms.ModelForm):
+    class Meta:
+        model = MediaCoverage
+        fields = ['title', 'url']
+        widgets = {
+            'title': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter media coverage title'
+            }),
+            'url': forms.URLInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter media coverage link'
+            }),
+        }
+
+
+class GalleryImageForm(forms.ModelForm):
+    class Meta:
+        model = GalleryImage
+        fields = ['image', 'description']
+        widgets = {
+            'image': forms.FileInput(attrs={'class': 'form-control'}),
+            'description': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Optional description'
+            }),
+        }
+
+
+class VideoForm(forms.ModelForm):
+    class Meta:
+        model = Video
+        fields = ['video_url', 'description']
+        widgets = {
+            'video_url': forms.URLInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Enter video link (e.g., YouTube)'
+            }),
+            'description': forms.TextInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'Optional description'
             }),
         }

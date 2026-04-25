@@ -1,12 +1,6 @@
-# core/models.py  (Fixed Clean Final Version)
-
-from django.db import models
 from django.utils import timezone
+from django.db import models
 
-
-# -------------------------
-# Banner Slider
-# -------------------------
 class Banner(models.Model):
     title = models.CharField(max_length=150)
     description = models.TextField()
@@ -17,10 +11,6 @@ class Banner(models.Model):
     def __str__(self):
         return self.title
 
-
-# -------------------------
-# Vision & Mission
-# -------------------------
 class VisionMission(models.Model):
     vision_title = models.CharField(max_length=150)
     vision_description = models.TextField()
@@ -30,10 +20,6 @@ class VisionMission(models.Model):
     def __str__(self):
         return "Vision & Mission"
 
-
-# -------------------------
-# Statistics
-# -------------------------
 class Statistic(models.Model):
     label = models.CharField(max_length=100)
     value = models.CharField(max_length=50)
@@ -43,10 +29,6 @@ class Statistic(models.Model):
     def __str__(self):
         return self.label
 
-
-# -------------------------
-# Initiatives
-# -------------------------
 class Initiative(models.Model):
     title = models.CharField(max_length=150)
     description = models.TextField()
@@ -57,10 +39,6 @@ class Initiative(models.Model):
     def __str__(self):
         return self.title
 
-
-# -------------------------
-# Contact Messages
-# -------------------------
 class ContactMessage(models.Model):
     name = models.CharField(max_length=100)
     email = models.EmailField()
@@ -71,10 +49,6 @@ class ContactMessage(models.Model):
     def __str__(self):
         return self.name
 
-
-# -------------------------
-# Donations
-# -------------------------
 class Donation(models.Model):
     donor_name = models.CharField(max_length=100)
     email = models.EmailField()
@@ -97,10 +71,6 @@ class Donation(models.Model):
     def __str__(self):
         return f"{self.donor_name} - ₹{self.amount}"
 
-
-# -------------------------
-# Volunteers
-# -------------------------
 class Volunteer(models.Model):
     full_name = models.CharField(max_length=100)
     email = models.EmailField()
@@ -111,10 +81,6 @@ class Volunteer(models.Model):
     def __str__(self):
         return self.full_name
 
-
-# -------------------------
-# Blog Posts
-# -------------------------
 class BlogPost(models.Model):
     title = models.CharField(max_length=200)
     content = models.TextField()
@@ -124,9 +90,6 @@ class BlogPost(models.Model):
     def __str__(self):
         return self.title
 
-# -------------------------
-# Our Story
-# -------------------------
 class OurStory(models.Model):
     content = models.TextField()
     created_at = models.DateTimeField(auto_now_add=True)
@@ -136,9 +99,6 @@ class OurStory(models.Model):
         return "Our Story"
 
 
-# -------------------------
-# Core Values
-# -------------------------
 class CoreValue(models.Model):
     value = models.CharField(max_length=200)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -146,10 +106,6 @@ class CoreValue(models.Model):
     def __str__(self):
         return self.value
 
-
-# -------------------------
-# Programs
-# -------------------------
 class Program(models.Model):
     name = models.CharField(max_length=200)
     description = models.TextField(blank=True)
@@ -158,10 +114,6 @@ class Program(models.Model):
     def __str__(self):
         return self.name
 
-
-# -------------------------
-# Team Members
-# -------------------------
 class TeamMember(models.Model):
     name = models.CharField(max_length=100)
     role = models.CharField(max_length=100)
@@ -171,10 +123,6 @@ class TeamMember(models.Model):
     def __str__(self):
         return self.name
 
-
-# -------------------------
-# Our Impact
-# -------------------------
 class OurImpact(models.Model):
     achievement = models.CharField(max_length=255)
     created_at = models.DateTimeField(auto_now_add=True)
@@ -184,9 +132,6 @@ class OurImpact(models.Model):
 
     def __str__(self):
         return self.achievement
-
-
-from django.utils import timezone
 
 class Project(models.Model):
     STATUS_CHOICES = [
@@ -213,8 +158,6 @@ class Project(models.Model):
     def __str__(self):
         return self.title
 
-
-# Add this NEW model below Project
 class ProjectImage(models.Model):
     project = models.ForeignKey(
         Project,
@@ -229,3 +172,54 @@ class ProjectImage(models.Model):
 
     def __str__(self):
         return f"Image for {self.project.title}"
+
+class PressRelease(models.Model):
+    title = models.CharField(max_length=255)
+    description = models.TextField()
+    release_date = models.DateField()
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'press_releases'
+        ordering = ['-release_date']
+
+    def __str__(self):
+        return self.title
+
+class MediaCoverage(models.Model):
+    title = models.CharField(max_length=255)
+    url = models.URLField(max_length=2083)
+    created_at = models.DateTimeField(default=timezone.now)
+    updated_at = models.DateTimeField(auto_now=True)
+
+    class Meta:
+        db_table = 'media_coverage'
+        ordering = ['-created_at']
+
+    def __str__(self):
+        return self.title
+
+class GalleryImage(models.Model):
+    image = models.ImageField(upload_to='gallery/')
+    description = models.CharField(max_length=255, blank=True)
+    uploaded_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        db_table = 'image_gallery'
+        ordering = ['-uploaded_at']
+
+    def __str__(self):
+        return self.description or f"Image {self.id}"
+
+class Video(models.Model):
+    video_url = models.URLField(max_length=2083)
+    description = models.CharField(max_length=255, blank=True)
+    uploaded_at = models.DateTimeField(default=timezone.now)
+
+    class Meta:
+        db_table = 'videos'
+        ordering = ['-uploaded_at']
+
+    def __str__(self):
+        return self.description or self.video_url

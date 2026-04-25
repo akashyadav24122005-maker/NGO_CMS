@@ -1,0 +1,211 @@
+{% extends 'base.html' %}
+{% block title %}Media | NGO CMS{% endblock %}
+{% block content %}
+
+<!-- Hero / Introduction Section -->
+<section style="background:linear-gradient(135deg,#1a6b3c,#2e7d52);
+                color:white; padding:60px 0; text-align:center;">
+    <div class="container">
+        <h1 class="fw-bold">NGO Media Page</h1>
+        <p style="opacity:0.9; max-width:700px; margin:0 auto;">
+            Welcome to the Media page of our NGO. Here you can find the latest
+            press releases, media coverage, images, and videos showcasing the
+            impact of our work.
+        </p>
+    </div>
+</section>
+
+<div class="container py-5">
+
+    <!-- ── PRESS RELEASES ──────────────────────────── -->
+    <section class="mb-5">
+        <h2 class="fw-bold mb-1" style="color:#1a6b3c;">Press Releases</h2>
+        <div style="width:60px;height:3px;background:#e8a020;
+                    border-radius:2px; margin-bottom:20px;"></div>
+
+        {% for pr in press_releases %}
+        <div class="card border-0 shadow-sm mb-3"
+             style="border-radius:10px; border-left:4px solid #1a6b3c !important;">
+            <div class="card-body p-4">
+                <h5 class="fw-bold mb-1" style="color:#1a6b3c;">
+                    {{ pr.title }}
+                </h5>
+
+                <p class="text-muted small mb-2">
+                    <i class="fas fa-calendar me-1"></i>
+                    {{ pr.release_date|date:"d M Y" }}
+                </p>
+
+                <p class="text-muted mb-0">
+                    {{ pr.description|truncatechars:150 }}
+                </p>
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-muted">No press releases yet.</p>
+        {% endfor %}
+    </section>
+
+    <!-- ── MEDIA COVERAGE ──────────────────────────── -->
+    <section class="mb-5">
+        <h2 class="fw-bold mb-1" style="color:#1a6b3c;">Media Coverage</h2>
+        <div style="width:60px;height:3px;background:#e8a020;
+                    border-radius:2px; margin-bottom:20px;"></div>
+
+        {% for mc in media_coverage %}
+        <div class="card border-0 shadow-sm mb-3" style="border-radius:10px;">
+            <div class="card-body p-4 d-flex justify-content-between align-items-center">
+
+                <div>
+                    <h6 class="fw-bold mb-1" style="color:#1a6b3c;">
+                        {{ mc.title }}
+                    </h6>
+
+                    <a href="{{ mc.url }}"
+                       target="_blank"
+                       class="text-decoration-none small"
+                       style="color:#2196F3;">
+
+                        <i class="fas fa-external-link-alt me-1"></i>
+                        View Article
+                    </a>
+                </div>
+
+                <i class="fas fa-newspaper fa-2x"
+                   style="color:#1a6b3c; opacity:0.3;"></i>
+
+            </div>
+        </div>
+        {% empty %}
+        <p class="text-muted">No media coverage yet.</p>
+        {% endfor %}
+    </section>
+
+    <!-- ── IMAGE GALLERY ───────────────────────────── -->
+    <section class="mb-5">
+        <h2 class="fw-bold mb-1" style="color:#1a6b3c;">Image Gallery</h2>
+
+        <div style="width:60px;height:3px;background:#e8a020;
+                    border-radius:2px; margin-bottom:20px;"></div>
+
+        <div class="row g-3">
+
+            {% for img in gallery_images %}
+            <div class="col-6 col-md-4 col-lg-3">
+
+                <div style="border-radius:10px;
+                            overflow:hidden;
+                            box-shadow:0 2px 8px rgba(0,0,0,0.1);
+                            cursor:pointer;
+                            transition:transform 0.3s;"
+
+                     onmouseover="this.style.transform='scale(1.03)'"
+                     onmouseout="this.style.transform='scale(1)'"
+
+                     onclick="
+                        document.getElementById('galleryModal').src='{{ img.image.url }}';
+                        new bootstrap.Modal(document.getElementById('imgModal')).show()
+                     ">
+
+                    <img src="{{ img.image.url }}"
+                         class="img-fluid w-100"
+                         style="height:180px; object-fit:cover;"
+                         alt="{{ img.description }}">
+
+                </div>
+
+                {% if img.description %}
+                <p class="text-muted small text-center mt-1 mb-0">
+                    {{ img.description }}
+                </p>
+                {% endif %}
+
+            </div>
+            {% empty %}
+            <p class="text-muted">No images in gallery yet.</p>
+            {% endfor %}
+
+        </div>
+    </section>
+
+    <!-- ── VIDEOS ───────────────────────────────────── -->
+    <section class="mb-5">
+        <h2 class="fw-bold mb-1" style="color:#1a6b3c;">Videos</h2>
+
+        <div style="width:60px;height:3px;background:#e8a020;
+                    border-radius:2px; margin-bottom:20px;"></div>
+
+        <div class="row g-4">
+
+            {% for video in videos %}
+            <div class="col-md-6">
+
+                <div class="card border-0 shadow-sm"
+                     style="border-radius:10px; overflow:hidden;">
+
+                    <div style="position:relative;
+                                padding-bottom:56.25%;
+                                height:0;
+                                overflow:hidden;">
+
+                        <iframe src="{{ video.video_url }}"
+                                style="position:absolute;
+                                       top:0;
+                                       left:0;
+                                       width:100%;
+                                       height:100%;
+                                       border:0;"
+                                allowfullscreen>
+                        </iframe>
+
+                    </div>
+
+                    {% if video.description %}
+                    <div class="card-body p-3">
+                        <p class="text-muted small mb-0">
+                            {{ video.description }}
+                        </p>
+                    </div>
+                    {% endif %}
+
+                </div>
+            </div>
+
+            {% empty %}
+            <p class="text-muted">No videos added yet.</p>
+            {% endfor %}
+
+        </div>
+    </section>
+
+</div>
+
+<!-- Contact for Media Section -->
+<section style="background:#1a6b3c; padding:30px 0; text-align:center; color:white;">
+    <div class="container">
+        <p class="mb-0">
+            Contact us at
+            <a href="mailto:media@ngo.org"
+               style="color:#e8a020; text-decoration:none;">
+                media@ngo.org
+            </a>
+            for any media inquiries.
+        </p>
+    </div>
+</section>
+
+<!-- Image Modal -->
+<div class="modal fade" id="imgModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content border-0 bg-transparent">
+            <div class="modal-body p-0 text-center">
+                <img id="galleryModal"
+                     src=""
+                     class="img-fluid"
+                     style="border-radius:10px; max-height:85vh;">
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

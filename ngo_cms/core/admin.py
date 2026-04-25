@@ -108,3 +108,26 @@ class ProgramAdmin(admin.ModelAdmin):
 class TeamMemberAdmin(admin.ModelAdmin):
     list_display = ("name", "role")
     search_fields = ("name", "role")
+
+
+
+
+from .models import PressRelease, MediaCoverage, GalleryImage, Video
+
+@admin.register(PressRelease)
+class PressReleaseAdmin(admin.ModelAdmin):
+    list_display = ('title', 'release_date', 'created_at')
+    search_fields = ('title',)
+
+@admin.register(MediaCoverage)
+class MediaCoverageAdmin(admin.ModelAdmin):
+    list_display = ('title', 'url', 'created_at')
+    search_fields = ('title',)
+
+@admin.register(GalleryImage)
+class GalleryImageAdmin(admin.ModelAdmin):
+    list_display = ('description', 'uploaded_at')
+
+@admin.register(Video)
+class VideoAdmin(admin.ModelAdmin):
+    list_display = ('description', 'video_url', 'uploaded_at')

@@ -1,0 +1,239 @@
+{% extends 'base_dashboard.html' %}
+{% block page_title %}Manage Media Page{% endblock %}
+{% block content %}
+
+<div class="text-center mb-4">
+    <h4 class="fw-bold" style="color:#1a6b3c;">Manage Media Page</h4>
+</div>
+
+<!-- ── PRESS RELEASES ─────────────────────────────── -->
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-newspaper me-2"></i>Press Releases
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="section" value="press_release">
+            <div class="mb-3">
+                <label class="form-label fw-bold small">Title</label>
+                {{ pr_form.title }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold small">Date</label>
+                {{ pr_form.release_date }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold small">Description</label>
+                {{ pr_form.description }}
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Add Press Release
+            </button>
+        </form>
+
+        <div class="table-responsive mt-4">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr><th>Title</th><th>Date</th><th>Description</th><th>Edit</th><th>Delete</th></tr>
+                </thead>
+                <tbody>
+                {% for pr in press_releases %}
+                <tr>
+                    <td><strong>{{ pr.title }}</strong></td>
+                    <td>{{ pr.release_date|date:"d M Y" }}</td>
+                    <td>{{ pr.description|truncatechars:50 }}</td>
+                    <td>
+                        <a href="{% url 'edit_press_release' pr.pk %}"
+                           class="btn btn-sm btn-warning">Edit</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'delete_press_release' pr.pk %}"
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('Delete?')">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="5" class="text-center text-muted py-3">
+                    No press releases yet.
+                </td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ── MEDIA COVERAGE ─────────────────────────────── -->
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-globe me-2"></i>Media Coverage
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="section" value="media_coverage">
+            <div class="mb-3">
+                <label class="form-label fw-bold small">Title</label>
+                {{ mc_form.title }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold small">URL</label>
+                {{ mc_form.url }}
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Add Media Coverage
+            </button>
+        </form>
+
+        <div class="table-responsive mt-4">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr><th>Title</th><th>URL</th><th>Edit</th><th>Delete</th></tr>
+                </thead>
+                <tbody>
+                {% for mc in media_coverage %}
+                <tr>
+                    <td><strong>{{ mc.title }}</strong></td>
+                    <td>
+                        <a href="{{ mc.url }}" target="_blank"
+                           style="color:#2196F3;">View Article</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'edit_media_coverage' mc.pk %}"
+                           class="btn btn-sm btn-warning">Edit</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'delete_media_coverage' mc.pk %}"
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('Delete?')">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" class="text-center text-muted py-3">
+                    No media coverage yet.
+                </td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ── IMAGE GALLERY ──────────────────────────────── -->
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-images me-2"></i>Image Gallery
+    </div>
+    <div class="card-body">
+        <form method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <input type="hidden" name="section" value="gallery">
+            <div class="mb-3">
+                <label class="form-label fw-bold small">Upload Image</label>
+                {{ gi_form.image }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold small">
+                    Description (optional)
+                </label>
+                {{ gi_form.description }}
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Add Image
+            </button>
+        </form>
+
+        <div class="table-responsive mt-4">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr><th>Image</th><th>Description</th><th>Edit</th><th>Delete</th></tr>
+                </thead>
+                <tbody>
+                {% for img in gallery_images %}
+                <tr>
+                    <td>
+                        <img src="{{ img.image.url }}" width="80" height="55"
+                             style="object-fit:cover; border-radius:6px;">
+                    </td>
+                    <td>{{ img.description|default:"—" }}</td>
+                    <td>
+                        <a href="{% url 'edit_gallery_image' img.pk %}"
+                           class="btn btn-sm btn-warning">Edit</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'delete_gallery_image' img.pk %}"
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('Delete?')">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" class="text-center text-muted py-3">
+                    No images yet.
+                </td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<!-- ── VIDEOS ─────────────────────────────────────── -->
+<div class="card mb-4">
+    <div class="card-header">
+        <i class="fas fa-video me-2"></i>Videos
+    </div>
+    <div class="card-body">
+        <form method="post">
+            {% csrf_token %}
+            <input type="hidden" name="section" value="video">
+            <div class="mb-3">
+                <label class="form-label fw-bold small">Video URL</label>
+                {{ v_form.video_url }}
+            </div>
+            <div class="mb-3">
+                <label class="form-label fw-bold small">
+                    Description (optional)
+                </label>
+                {{ v_form.description }}
+            </div>
+            <button type="submit" class="btn btn-primary">
+                <i class="fas fa-plus me-2"></i>Add Video
+            </button>
+        </form>
+
+        <div class="table-responsive mt-4">
+            <table class="table table-hover mb-0">
+                <thead>
+                    <tr><th>Video</th><th>Description</th><th>Edit</th><th>Delete</th></tr>
+                </thead>
+                <tbody>
+                {% for v in videos %}
+                <tr>
+                    <td>
+                        <a href="{{ v.video_url }}" target="_blank"
+                           style="color:#2196F3;">View Video</a>
+                    </td>
+                    <td>{{ v.description|default:"—" }}</td>
+                    <td>
+                        <a href="{% url 'edit_video' v.pk %}"
+                           class="btn btn-sm btn-warning">Edit</a>
+                    </td>
+                    <td>
+                        <a href="{% url 'delete_video' v.pk %}"
+                           class="btn btn-sm btn-danger"
+                           onclick="return confirm('Delete?')">Delete</a>
+                    </td>
+                </tr>
+                {% empty %}
+                <tr><td colspan="4" class="text-center text-muted py-3">
+                    No videos yet.
+                </td></tr>
+                {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+{% endblock %}
